@@ -1,6 +1,5 @@
 "use client";
 
-import { Lock } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useEffect, Suspense } from "react";
@@ -24,11 +23,11 @@ function ChatDashboardContent() {
         // We haven't built the Active Chat panel yet (Slice 4).
         // Let's just show an "Active Chat Skeleton/Placeholder"
         return (
-            <div className="flex flex-col items-center justify-center w-full h-full bg-[var(--color-bg-chat)]">
-                <p className="text-[var(--color-text-secondary)] text-[var(--text-lg)]">
+            <div className="flex flex-col items-center justify-center w-full h-full bg-(--color-bg-chat)">
+                <p className="text-(--color-text-secondary) text-lg">
                     Active Chat (ID: {activeChatId || idParam})
                 </p>
-                <p className="text-[var(--color-text-secondary)] mt-2">
+                <p className="text-(--color-text-secondary) mt-2">
                     Message flow will be built in Slice 4.
                 </p>
             </div>
@@ -36,13 +35,15 @@ function ChatDashboardContent() {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center w-full h-full bg-[var(--color-bg-chat)] text-center px-4">
-            <Lock className="w-[80px] h-[80px] text-[var(--color-text-secondary)] opacity-40 mb-4" strokeWidth={1} />
-            <h2 className="text-[var(--color-text-secondary)] text-[var(--text-lg)] font-medium mb-2">
-                Select a chat to start messaging
+        <div className="flex flex-col items-center justify-center w-full h-full bg-(--color-bg-chat) text-center px-4">
+            <div className="size-24 rounded-full bg-(--color-bg-base) flex items-center justify-center mb-6">
+                <span className="material-symbols-outlined text-(--color-text-secondary) text-5xl">chat_bubble</span>
+            </div>
+            <h2 className="text-(--color-text-primary) text-2xl font-bold mb-3">
+                Welcome to ChatSphere
             </h2>
-            <p className="text-[var(--color-text-secondary)] text-[var(--text-sm)] max-w-sm">
-                Your messages are private and delivered in real time.
+            <p className="text-(--color-text-secondary) text-base max-w-md leading-relaxed">
+                Connect with friends and family through secure, real-time messaging. Start a conversation or join an existing chat to get started.
             </p>
         </div>
     );
@@ -50,7 +51,7 @@ function ChatDashboardContent() {
 
 export default function ChatDashboardPage() {
     return (
-        <Suspense fallback={<div className="flex w-full h-full items-center justify-center bg-[var(--color-bg-chat)] text-[var(--color-text-secondary)]">Loading...</div>}>
+        <Suspense fallback={<div className="flex w-full h-full items-center justify-center bg-(--color-bg-chat) text-(--color-text-secondary)">Loading...</div>}>
             <ChatDashboardContent />
         </Suspense>
     );
