@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { fetchChatsThunk, createDMThunk } from './chatThunks';
 
 export interface Chat {
     _id: string;
@@ -47,7 +48,18 @@ export const chatSlice = createSlice({
         setActiveChatId: (state, action: PayloadAction<string | null>) => {
             state.activeChatId = action.payload;
         },
-        // We'll add more in Slice 3 and 4
+    },
+    extraReducers: (builder) => {
+        builder.addCase(fetchChatsThunk.fulfilled, (state, action) => {
+            state.chats = action.payload;
+        });
+        builder.addCase(createDMThunk.fulfilled, (state, action) => {
+            const existingChat = state.chats.find((chat: any) => chat._id === action.payload._id);
+            if (!existingChat) {
+                state.chats.unshift(action.payload);
+            }
+            state.activeChatId = action.payload._id;
+        });
     },
 });
 

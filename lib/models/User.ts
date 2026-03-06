@@ -9,6 +9,7 @@ export interface IUser extends Document {
     statusMessage: string;
     isOnline: boolean;
     lastSeen: Date;
+    isVerified: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -23,6 +24,7 @@ const UserSchema = new Schema<IUser>(
         statusMessage: { type: String, default: "Hey there! I'm using ChatSphere", maxlength: 100 },
         isOnline: { type: Boolean, default: false },
         lastSeen: { type: Date, default: Date.now },
+        isVerified: { type: Boolean, default: false },
     },
     { timestamps: true }
 );

@@ -10,6 +10,11 @@ const envSchema = z.object({
     UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
     NEXT_PUBLIC_APP_URL: z.string().optional().default('http://localhost:3000'),
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+    SMTP_HOST: z.string().optional(),
+    SMTP_PORT: z.string().optional(),
+    SMTP_USER: z.string().optional(),
+    SMTP_PASS: z.string().optional(),
+    SMTP_FROM: z.string().default('noreply@chatsphere.com'),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

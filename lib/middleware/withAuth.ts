@@ -14,14 +14,15 @@ type TokenPayload = {
 }
 
 type AsyncRouteHandler = (req: AuthenticatedRequest, ...args: any[]) => Promise<NextResponse>;
+type NextRouteHandler = (req: NextRequest, ...args: any[]) => Promise<NextResponse>;
 
 /**
  * Higher-order function to protect Next.js App Router API routes.
  * It verifies the JWT token from the `session.token` cookie and injects
  * the decoded user payload into the request object.
  */
-export function withAuth(handler: AsyncRouteHandler): AsyncRouteHandler {
-    return async (request: AuthenticatedRequest, ...args: any[]) => {
+export function withAuth(handler: AsyncRouteHandler): NextRouteHandler {
+    return async (request: NextRequest, ...args: any[]) => {
         try {
             const token = request.cookies.get('session.token')?.value;
 
@@ -36,10 +37,10 @@ export function withAuth(handler: AsyncRouteHandler): AsyncRouteHandler {
             }
 
             // Inject the user payload into the request
-            request.user = decoded;
+            (request as AuthenticatedRequest).user = decoded;
 
             // Call the original handler
-            return handler(request, ...args);
+            return handler(request as AuthenticatedRequest, ...args);
         } catch (error) {
             console.error('ERROR: [withAuth]', error);
             return NextResponse.json({ error: 'Unauthorized: Authentication failed' }, { status: 401 });

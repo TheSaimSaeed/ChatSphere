@@ -6,6 +6,7 @@ export interface User {
     email: string;
     avatar: string | null;
     statusMessage: string;
+    isVerified: boolean;
 }
 
 export interface AuthState {

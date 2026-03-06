@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} min-h-screen bg-[var(--color-bg-base)] text-[var(--color-text-primary)] antialiased selection:bg-[var(--color-primary)] selection:text-white`}>
+      <body className={`${inter.className} min-h-screen bg-[var(--chat-bg-base)] text-[var(--chat-text-primary)] antialiased selection:bg-[var(--chat-primary)] selection:text-white`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <StoreProvider>
             <SessionInit>

@@ -61,6 +61,16 @@ The goal is to build a scalable, production-ready, real-time messaging system op
 - JWT issued on successful registration, set as HTTP-only cookie
 - User redirected to the chat dashboard
 
+## Authentication & User Management → Registration
+
+Add: after form submission, a 6-digit OTP is sent to the user's email before the account is activated.
+Add: user is redirected to /verify-email instead of /chat after submitting the registration form.
+Add: JWT is only issued after successful OTP verification.
+
+## Authentication & User Management → Login
+
+Add: if a user tries to login with an unverified account, they are redirected to /verify-email with a fresh OTP sent automatically instead of receiving "Invalid credentials".
+
 ### Login
 - User provides email and password
 - Server looks up user by email, compares password against bcrypt hash
@@ -200,6 +210,10 @@ REST endpoints:
 | PATCH | `/api/messages/:id/delete-for-me` | Soft delete a message |
 | POST | `/api/media/upload` | Upload file to Cloudinary |
 
+
+POST /api/auth/verify-email
+POST /api/auth/resend-otp
+
 Socket.io events handled server-side: `message:send`, `message:delivered`, `message:read`, `typing:start`, `typing:stop`, `presence:online`, `presence:offline`.
 
 ---
@@ -214,7 +228,7 @@ Four collections:
 | `chats` | DM and group conversation metadata |
 | `messages` | All messages across all chats |
 | `media` | File metadata for Cloudinary uploads |
-
+Add: a 5th collection — otps — to the collections table.
 ---
 
 # 7. 🔄 Authentication Flow
@@ -267,6 +281,7 @@ Contacts notified of offline status
 Redirect → /login
 ```
 
+Update the REGISTRATION flow to include the OTP step between "New User document saved" and "JWT issued".
 ---
 
 # 8. 🔄 Real-Time Communication Flow
@@ -293,7 +308,9 @@ Redirect → /login
 - Secure file upload — MIME type + size validation before Cloudinary
 - Non-participant access blocked — middleware verifies chat membership on all message endpoints
 - Generic auth error messages — no hint whether email or password was wrong
-
+-Add: OTP generated using crypto.randomInt (cryptographically secure).
+Add: rate limiting on /api/auth/verify-email and /api/auth/resend-otp.
+Add: unverified accounts cannot access any protected route.
 ---
 
 # 10. ⚡ Performance Requirements
@@ -371,6 +388,9 @@ Redirect → /login
   /cloudinary         → Upload helper
 /store                → Redux Toolkit slices
 /components           → Reusable UI components
+
+Add: /api/auth/verify-email and /api/auth/resend-otp route files.
+Add: otps model file under /lib/models.
 ```
 
 ---
@@ -379,6 +399,7 @@ Redirect → /login
 
 ## Phase 1
 - Email + password authentication
+- Add: email OTP verification as a Phase 1 item (it is now part of core registration).
 - Profile setup (name, avatar, optional phone)
 - Basic chat UI
 - 1-to-1 messaging (text)
@@ -433,7 +454,7 @@ Redirect → /login
 | Security breaches | Regular audits, bcrypt, HTTP-only cookies |
 | File storage cost | Cloudinary free tier for MVP; CDN + compression for scale |
 | User identity abuse | Email uniqueness + optional phone for future binding |
-
+Add a new risk row: email delivery failure — mitigation: resend flow + error handling.
 ---
 
 # 18. 🔮 Phone Verification Upgrade Path

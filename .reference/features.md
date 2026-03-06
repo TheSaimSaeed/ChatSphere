@@ -40,6 +40,11 @@
 | Phone field | Optional plain string (E.164 format); stored but **not verified** in MVP |
 | Post-registration | JWT issued → HTTP-only cookie set → redirect to `/chat` |
 
+Add: OTP email sent on registration.
+Add: account inactive (isVerified: false) until OTP confirmed.
+Add: JWT only issued after verification.
+
+
 ### Login
 
 | Feature | Detail |
@@ -48,6 +53,7 @@
 | Error handling | Generic `401 "Invalid credentials"` — no hint whether email or password was wrong |
 | On success | JWT issued, `User.isOnline = true`, Socket.io connection opened, redirect to `/chat` |
 | Rate limiting | Login endpoint rate-limited to prevent brute-force attacks |
+- unverified accounts are detected on login — fresh OTP is sent and user is redirected to /verify-email.
 
 ### Logout
 
@@ -377,6 +383,9 @@ When no avatar image is set, a colored circle with the user's initials is shown.
 | XSS | Next.js escapes output by default; no `dangerouslySetInnerHTML` for user content |
 | Socket.io auth | JWT verified on every Socket.io connection and message event |
 
+- OTP generated with crypto.randomInt (cryptographically secure).
+- rate limiting on verify-email and resend-otp endpoints.
+- unverified accounts blocked from all protected routes.
 ---
 
 ## 13. Performance & Scalability
@@ -416,6 +425,8 @@ When no avatar image is set, a colored circle with the user's initials is shown.
 | PATCH | `/api/messages/:id/delete-for-me` | Soft-delete a message for self | Protected |
 | POST | `/api/media/upload` | Upload file to Cloudinary | Protected |
 
+POST/api/auth/verify-emailValidate OTP, activate account, issue JWTPublicPOST/api/auth/resend-otpDelete old OTP, generate new one, resend emailPublic
+
 ---
 
 ## 15. Socket.io Events
@@ -439,6 +450,11 @@ When no avatar image is set, a colored circle with the user's initials is shown.
 Stores registered accounts. Email is the primary identity (unique, required). Password bcrypt-hashed with `select: false`. Phone is optional and unverified in MVP.
 
 Key fields: `email`, `password`, `phone?`, `name`, `avatar`, `statusMessage`, `isOnline`, `lastSeen`.
+
+### `otps`
+Stores active OTP codes for email verification.
+
+Key fields: `email`, `code` (6-digit), `expiresAt`, `used` (boolean).
 
 ### `chats`
 Represents a DM or group conversation. Holds participant refs and a denormalized `lastMessage` snapshot for sidebar performance.

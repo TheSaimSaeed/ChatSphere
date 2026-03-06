@@ -4,23 +4,23 @@
 
 @layer base {
   :root {
-    --color-bg-base: #F0F2F5;
-    --color-bg-surface: #FFFFFF;
-    --color-bg-chat: #E5DDD5;
-    --color-bubble-outgoing: #DCF8C6;
-    --color-bubble-incoming: #FFFFFF;
-    --color-primary: lab(70.5521% -66.5147 45.8072);
-    --color-primary-dark: lab(66.9756% -58.27 34.20);
-    --color-header: #075E54;
-    --color-text-primary: #111B21;
-    --color-text-secondary: #667781;
-    --color-text-on-header: #FFFFFF;
-    --color-border: #E9EDEF;
-    --color-tick-grey: #667781;
-    --color-tick-blue: #53BDEB;
-    --color-online: #25D366;
-    --color-danger: #EB4034;
-    --color-info: #3B82F6;
+    --chat-bg-base: #F0F2F5;
+    --chat-bg-surface: #FFFFFF;
+    --chat-bg-chat: #E5DDD5;
+    --chat-bubble-outgoing: #DCF8C6;
+    --chat-bubble-incoming: #FFFFFF;
+    --chat-primary: #25D366;
+    --chat-primary-dark: #1EBE58;
+    --chat-header: #075E54;
+    --chat-text-primary: #111B21;
+    --chat-text-secondary: #667781;
+    --chat-text-on-header: #FFFFFF;
+    --chat-border: #E9EDEF;
+    --chat-tick-grey: #667781;
+    --chat-tick-blue: #53BDEB;
+    --chat-online: #25D366;
+    --chat-danger: #EB4034;
+    --chat-info: #3B82F6;
 
     --text-xs: 11px;
     --text-sm: 13px;
@@ -33,24 +33,24 @@
     --radius-md: 8px;
     --radius-bubble: 7.5px;
     --radius-full: 9999px;
-    --background: var(--color-bg-base);
-    --foreground: var(--color-text-primary);
+    --background: var(--chat-bg-base);
+    --foreground: var(--chat-text-primary);
   }
 
   .dark {
-    --color-bg-base: #121212;
-    --color-bg-surface: #1E1E1E;
-    --color-bg-chat: #121212;
-    --color-bubble-outgoing: #0a2e2e;
-    --color-bubble-incoming: #1E1E1E;
-    --color-primary: lab(70.5521% -66.5147 45.8072);
-    --color-primary-dark: lab(66.9756% -58.27 34.20);
-    --color-text-primary: #f1f5f9;
-    --color-text-secondary: #94a3b8;
-    --color-header: #075E54;
-    --color-border: rgba(255, 255, 255, 0.1);
-    --background: var(--color-bg-base);
-    --foreground: var(--color-text-primary);
+    --chat-bg-base: #121212;
+    --chat-bg-surface: #1E1E1E;
+    --chat-bg-chat: #121212;
+    --chat-bubble-outgoing: #0a2e2e;
+    --chat-bubble-incoming: #1E1E1E;
+    --chat-primary: #25D366;
+    --chat-primary-dark: #1EBE58;
+    --chat-text-primary: #f1f5f9;
+    --chat-text-secondary: #94a3b8;
+    --chat-header: #075E54;
+    --chat-border: rgba(255, 255, 255, 0.1);
+    --background: var(--chat-bg-base);
+    --foreground: var(--chat-text-primary);
   }
 
   * {
@@ -64,21 +64,21 @@
 
 @layer components {
   .stitch-input {
-    @apply w-full bg-transparent border border-[var(--color-border)] rounded-xl px-4 py-3 text-[var(--color-text-primary)] placeholder:text-[var(--color-text-secondary)] focus:outline-none focus:border-[var(--color-primary)]/50 focus:ring-1 focus:ring-[var(--color-primary)]/50 transition-all;
+    @apply w-full bg-transparent border border-[var(--chat-border)] rounded-xl px-4 py-3 text-[var(--chat-text-primary)] placeholder:text-[var(--chat-text-secondary)] focus:outline-none focus:border-[var(--chat-primary)]/50 focus:ring-1 focus:ring-[var(--chat-primary)]/50 transition-all;
   }
 
   .stitch-btn {
-    @apply w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-[#121212] font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 text-lg shadow-lg shadow-[var(--color-primary)]/10 disabled:opacity-70 disabled:cursor-not-allowed;
+    @apply w-full bg-[var(--chat-primary)] hover:bg-[var(--chat-primary-dark)] text-white dark:text-[#121212] font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 text-lg shadow-lg shadow-[var(--chat-primary)]/20 disabled:opacity-70 disabled:cursor-not-allowed;
   }
 }
 
 @layer base {
   * {
-    @apply border-[var(--color-border)];
+    @apply border-[var(--chat-border)];
   }
 
   body {
-    @apply bg-[var(--color-bg-base)] text-[var(--color-text-primary)] font-sans antialiased;
+    @apply bg-[var(--chat-bg-base)] text-[var(--chat-text-primary)] font-sans antialiased;
   }
 }
 

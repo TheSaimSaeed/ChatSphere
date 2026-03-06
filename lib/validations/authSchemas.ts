@@ -19,6 +19,17 @@ export const updateProfileSchema = z.object({
     avatar: z.string().url('Invalid URL').optional().or(z.literal('')),
 });
 
+export const verifyEmailSchema = z.object({
+    email: z.string().email(),
+    code: z.string().length(6, 'Verification code must be 6 digits').regex(/^\d{6}$/, 'Code must contain only numbers'),
+});
+
+export const resendOtpSchema = z.object({
+    email: z.string().email(),
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+export type VerifyEmailInput = z.infer<typeof verifyEmailSchema>;
+export type ResendOtpInput = z.infer<typeof resendOtpSchema>;

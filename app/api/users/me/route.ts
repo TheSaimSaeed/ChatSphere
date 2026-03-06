@@ -22,6 +22,7 @@ async function meHandler(req: AuthenticatedRequest) {
             statusMessage: user.statusMessage,
             isOnline: user.isOnline,
             lastSeen: user.lastSeen,
+            isVerified: user.isVerified,
         };
 
         return NextResponse.json({ user: userToReturn });
