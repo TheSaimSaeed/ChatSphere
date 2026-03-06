@@ -125,7 +125,7 @@ The following MCP servers are connected and must be used for their designated pu
 - **Good uses in this project:** Skeleton shimmer animations (Slice 11), notification badges, typing indicator animation, message arrival animations, online/offline presence transitions
 
 ### Stitch MCP Server
-- **Purpose:** Access the Stitch design tool where the UI screens for ChatSphere have been designed
+- **Purpose:** it is mandatory to Access the Stitch design tool where the UI screens for ChatSphere have been designed
 - **When to use:** Every time you are building a frontend component or page. Always query Stitch first to see the exact design for that screen before writing any UI code
 - **How to use:** Use the Stitch MCP server to fetch the current screen design, inspect spacing, colours, typography, and component layout. The Stitch designs are the visual source of truth for the frontend — they take precedence over written descriptions in `UIScreens.md` when there is a discrepancy
 - **What to look for:** Component placement, spacing values, colour tokens, font sizes, border radii, shadow levels, and interaction states (hover, active, disabled, loading)
