@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import StoreProvider from "./StoreProvider";
 import { ToastContainer } from "@/components/shared/ToastContainer";
+import { SessionInit } from "@/components/auth/SessionInit";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,10 +21,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen bg-[var(--color-bg-base)] text-[var(--color-text-primary)] antialiased selection:bg-[var(--color-primary)] selection:text-white`}>
-        <StoreProvider>
-          {children}
-          <ToastContainer />
-        </StoreProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <StoreProvider>
+            <SessionInit>
+              {children}
+              <ToastContainer />
+            </SessionInit>
+          </StoreProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
