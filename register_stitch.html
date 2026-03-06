@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ChatSphere — Register</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --color-bg-base: #F0F2F5;
+            --color-bg-surface: #FFFFFF;
+            --color-primary: #25D366;
+            --color-primary-dark: #1EBE58;
+            --color-header: #075E54;
+            --color-text-primary: #111B21;
+            --color-text-secondary: #667781;
+            --color-border: #E9EDEF;
+            --color-danger: #EB4034;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg-base);
+            color: var(--color-text-primary);
+        }
+        .strength-bar-segment {
+            height: 4px;
+            flex: 1;
+            border-radius: 2px;
+            background-color: #E9EDEF;
+        }
+        .strength-weak { background-color: #EB4034; }
+        .strength-medium { background-color: #F59E0B; }
+        .strength-strong { background-color: #25D366; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+<div class="fixed top-6 right-6">
+<button class="p-2 rounded-full hover:bg-white/10 transition-colors text-slate-500 hover:text-slate-700" title="Toggle theme">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+</div>
+<div class="w-full max-w-[1000px] h-[700px] bg-[var(--color-bg-surface)] rounded-[var(--radius-md)] shadow-lg overflow-hidden flex">
+<div class="hidden lg:flex lg:w-[40%] bg-[var(--color-header)] flex-col items-center justify-center text-center p-12">
+<div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-white text-[48px]">forum</span>
+</div>
+<h1 class="text-white text-3xl font-bold mb-2">ChatSphere</h1>
+<p class="text-white/75 text-sm max-w-[240px]">Join millions messaging in real time.</p>
+</div>
+<div class="w-full lg:w-[60%] flex flex-col justify-center p-8 md:p-16 overflow-y-auto">
+<div class="max-w-[400px] mx-auto w-full">
+<header class="mb-8">
+<h2 class="text-2xl font-bold text-[var(--color-text-primary)] mb-1">Create your account</h2>
+<p class="text-[var(--color-text-secondary)] text-sm">Free, fast, and always in sync.</p>
+</header>
+<form class="space-y-4">
+<div>
+<label class="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5" for="name">Full Name</label>
+<input autocomplete="name" class="w-full h-11 px-4 border-[var(--color-border)] rounded-[var(--radius-sm)] focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all" id="name" name="name" placeholder="Alice Johnson" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5" for="email">Email Address</label>
+<input autocomplete="email" class="w-full h-11 px-4 border-[var(--color-border)] rounded-[var(--radius-sm)] focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all" id="email" name="email" placeholder="you@example.com" type="email"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5" for="password">Password</label>
+<div class="relative">
+<input autocomplete="new-password" class="w-full h-11 px-4 pr-10 border-[var(--color-border)] rounded-[var(--radius-sm)] focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all" id="password" name="password" placeholder="Min. 8 characters" type="password"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+<div class="mt-2 flex gap-1">
+<div class="strength-bar-segment strength-medium"></div>
+<div class="strength-bar-segment strength-medium"></div>
+<div class="strength-bar-segment"></div>
+<div class="strength-bar-segment"></div>
+</div>
+<p class="text-[11px] text-[var(--color-text-secondary)] mt-1.5">Must be at least 8 characters.</p>
+</div>
+<div>
+<div class="flex justify-between items-center mb-1.5">
+<label class="block text-sm font-medium text-[var(--color-text-secondary)]" for="phone">Phone Number</label>
+<span class="text-[11px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">optional</span>
+</div>
+<input autocomplete="tel" class="w-full h-11 px-4 border-[var(--color-border)] rounded-[var(--radius-sm)] focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all" id="phone" name="phone" placeholder="+923001234567" type="tel"/>
+<p class="text-[11px] text-[var(--color-text-secondary)] mt-1.5">E.164 format, e.g. +923001234567. Used for future features.</p>
+</div>
+<div class="pt-2">
+<button class="w-full h-11 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-semibold rounded-[var(--radius-sm)] transition-colors flex items-center justify-center" type="submit">
+                            Create Account
+                        </button>
+</div>
+<div class="text-center pt-2">
+<p class="text-sm text-[var(--color-text-secondary)]">
+                            Already have an account? 
+                            <a class="text-[var(--color-primary)] font-semibold hover:underline" href="/login">Sign in</a>
+</p>
+</div>
+</form>
+</div>
+</div>
+</div>
+
+</body></html>
