@@ -43,11 +43,11 @@
     --color-bg-chat: #121212;
     --color-bubble-outgoing: #0a2e2e;
     --color-bubble-incoming: #1E1E1E;
-    --color-primary: #13ec5b;
-    --color-primary-dark: #10c94d;
+    --color-primary: #25D366;
+    --color-primary-dark: #1EBE58;
     --color-text-primary: #f1f5f9;
     --color-text-secondary: #94a3b8;
-    --color-header: #0a2e2e;
+    --color-header: #075E54;
     --color-border: rgba(255, 255, 255, 0.1);
     --background: var(--color-bg-base);
     --foreground: var(--color-text-primary);
