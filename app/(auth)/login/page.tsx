@@ -79,7 +79,7 @@ export default function LoginPage() {
 
                 <div className="w-full max-w-md">
                     <div className="mb-10 text-center lg:text-left">
-                        <h2 className="text-3xl font-bold text-[var(--color-text-primary)] mb-3 font-sans">Welcome Back</h2>
+                        <h2 className="text-3xl font-bold mb-3 font-sans text-inherit">Welcome Back</h2>
                         <p className="text-[var(--color-text-secondary)]">Enter your credentials to access your account.</p>
                     </div>
 

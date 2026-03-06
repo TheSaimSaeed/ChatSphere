@@ -101,7 +101,7 @@ export default function RegisterPage() {
 
                 <div className="w-full max-w-md my-auto">
                     <div className="mb-8 text-center lg:text-left">
-                        <h2 className="text-3xl font-bold text-[var(--color-text-primary)] mb-3 font-sans">Create Account</h2>
+                        <h2 className="text-3xl font-bold mb-3 font-sans text-inherit">Create Account</h2>
                         <p className="text-[var(--color-text-secondary)]">Get started securely in seconds.</p>
                     </div>
 

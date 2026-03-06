@@ -9,8 +9,8 @@
     --color-bg-chat: #E5DDD5;
     --color-bubble-outgoing: #DCF8C6;
     --color-bubble-incoming: #FFFFFF;
-    --color-primary: #25D366;
-    --color-primary-dark: #1EBE58;
+    --color-primary: lab(70.5521% -66.5147 45.8072);
+    --color-primary-dark: lab(66.9756% -58.27 34.20);
     --color-header: #075E54;
     --color-text-primary: #111B21;
     --color-text-secondary: #667781;
@@ -43,8 +43,8 @@
     --color-bg-chat: #121212;
     --color-bubble-outgoing: #0a2e2e;
     --color-bubble-incoming: #1E1E1E;
-    --color-primary: #25D366;
-    --color-primary-dark: #1EBE58;
+    --color-primary: lab(70.5521% -66.5147 45.8072);
+    --color-primary-dark: lab(66.9756% -58.27 34.20);
     --color-text-primary: #f1f5f9;
     --color-text-secondary: #94a3b8;
     --color-header: #075E54;
