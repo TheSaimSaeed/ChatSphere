@@ -5,47 +5,66 @@ import { RootState } from "@/store";
 import { useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
+import ChatHeader from "@/components/chat/ChatHeader";
+import MessageArea from "@/components/chat/MessageArea";
+import MessageInput from "@/components/chat/MessageInput";
+
 function ChatDashboardContent() {
     const { activeChatId } = useSelector((state: RootState) => state.chat);
     const router = useRouter();
     const searchParams = useSearchParams();
     const idParam = searchParams.get('id');
 
-    // Sync activeChatId with URL state? Wait, we handle this differently, state rules first
-    // In Slice 3: right panel Welcome state is rendered here. 
-    // Actual chat messages (Slice 4) will still be rendered here probably or we do something else?
-    // According to standard NextJS layouts, we'd use `chat/[chatId]/page.tsx`. But the PRD says we have `/chat` route.
-    // If activeChatId exists, we can render the Active Chat component here later in Slice 4.
-
-    // For Slice 3: We just show welcome screen if no active chat.
-
     if (activeChatId || idParam) {
-        // We haven't built the Active Chat panel yet (Slice 4).
-        // Let's just show an "Active Chat Skeleton/Placeholder"
         return (
-            <div className="flex flex-col items-center justify-center w-full h-full bg-(--color-bg-chat)">
-                <p className="text-(--color-text-secondary) text-lg">
-                    Active Chat (ID: {activeChatId || idParam})
-                </p>
-                <p className="text-(--color-text-secondary) mt-2">
-                    Message flow will be built in Slice 4.
-                </p>
-            </div>
+            <main className="flex-1 flex flex-col h-full bg-(--color-bg-base) relative overflow-hidden">
+                <ChatHeader />
+                <MessageArea />
+                <MessageInput />
+            </main>
         );
     }
 
     return (
-        <div className="flex flex-col items-center justify-center w-full h-full bg-(--color-bg-chat) text-center px-4">
-            <div className="size-24 rounded-full bg-(--color-bg-base) flex items-center justify-center mb-6">
-                <span className="material-symbols-outlined text-(--color-text-secondary) text-5xl">chat_bubble</span>
+        <main className="flex-1 flex flex-col bg-(--chat-bg) relative overflow-hidden">
+            <div className="flex-1 flex flex-col items-center justify-center p-12">
+                <div className="relative mb-8">
+                    <div className="size-32 rounded-full bg-primary/5 flex items-center justify-center border border-primary/10">
+                        <span className="material-symbols-outlined text-primary text-[64px] font-light">chat_add_on</span>
+                    </div>
+                </div>
+                <h2 className="text-2xl font-bold text-white mb-3">No active conversations</h2>
+                <p className="text-slate-500 text-center max-w-sm mb-8">Select a contact or start a new chat to begin connecting with your team and friends.</p>
+                <button className="px-8 py-3 bg-primary text-black font-bold rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/10 flex items-center gap-2">
+                    <span className="material-symbols-outlined">add</span>
+                    Start New Chat
+                </button>
             </div>
-            <h2 className="text-(--color-text-primary) text-2xl font-bold mb-3">
-                Welcome to ChatSphere
-            </h2>
-            <p className="text-(--color-text-secondary) text-base max-w-md leading-relaxed">
-                Connect with friends and family through secure, real-time messaging. Start a conversation or join an existing chat to get started.
-            </p>
-        </div>
+            <footer className="p-6 bg-(--chat-bg)/80 backdrop-blur-md border-t border-white/5 opacity-50 grayscale pointer-events-none">
+                <div className="max-w-4xl mx-auto flex items-end gap-4">
+                    <div className="flex items-center gap-2 mb-1">
+                        <button className="p-2 text-slate-600">
+                            <span className="material-symbols-outlined">add_circle</span>
+                        </button>
+                        <button className="p-2 text-slate-600">
+                            <span className="material-symbols-outlined">mood</span>
+                        </button>
+                    </div>
+                    <div className="flex-1 relative">
+                        <textarea className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 pr-12 text-sm text-slate-600 placeholder:text-slate-600 resize-none max-h-32 min-h-12 outline-none" disabled placeholder="Select a chat to type..." rows={1}></textarea>
+                        <button className="absolute right-3 bottom-2.5 text-slate-600 p-1" disabled>
+                            <span className="material-symbols-outlined">send</span>
+                        </button>
+                    </div>
+                </div>
+                <div className="mt-4 flex justify-center">
+                    <div className="flex items-center gap-2 text-slate-700">
+                        <span className="material-symbols-outlined text-sm">lock</span>
+                        <span className="text-[9px] font-bold uppercase tracking-[0.2em]">End-to-end encrypted</span>
+                    </div>
+                </div>
+            </footer>
+        </main>
     );
 }
 

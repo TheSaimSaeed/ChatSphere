@@ -55,7 +55,23 @@ export function initSocketServer(httpServer: HttpServer) {
             }
         });
 
-        // We'll add remaining events in Slice 4 and Slice 8
+        socket.on('join_room', (chatId: string) => {
+            socket.join(chatId);
+        });
+
+        socket.on(SOCKET_EVENTS.MESSAGE_SEND, async (data: any) => {
+            try {
+                // data = { chatId, type, content, mediaId }
+                const { sendMessage } = await import('../services/messageService');
+                const message = await sendMessage(userId, data);
+
+                socket.to(data.chatId).emit(SOCKET_EVENTS.MESSAGE_RECEIVE, message);
+                socket.emit(SOCKET_EVENTS.MESSAGE_DELIVERED, message);
+
+            } catch (err: any) {
+                console.error('ERROR: [socket:server] Failed to send message', err);
+            }
+        });
     });
 
     return io;

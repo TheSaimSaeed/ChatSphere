@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "module": "CommonJS",
+        "moduleResolution": "Node",
+        "target": "ESNext",
+        "esModuleInterop": true,
+        "allowJs": true
+    },
+    "include": [
+        "server.ts",
+        "lib/**/*.ts"
+    ]
+}

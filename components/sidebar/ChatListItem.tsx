@@ -57,30 +57,33 @@ export default function ChatListItem({ chat, isActive, onClick }: ChatListItemPr
     return (
         <div
             onClick={onClick}
-            className={`flex items-center h-18 px-4 py-2 cursor-pointer transition-colors border-b border-(--color-border) ${isActive ? 'bg-(--color-bg-base) border-l-[3px] border-l-(--color-primary)' : 'bg-transparent hover:bg-(--color-bg-base)'
-                }`}
+            className={`flex items-center h-18 px-4 py-2 cursor-pointer transition-colors border-b border-white/5 border-l-[3px] ${
+                isActive
+                    ? 'border-l-primary bg-white/6'
+                    : 'border-l-transparent hover:bg-white/4'
+            }`}
         >
-            <div className={`shrink-0 ${isActive ? '-ml-0.75' : ''}`}>
+            <div className="shrink-0">
                 <Avatar name={name || 'Unknown'} src={avatar} isOnline={isOnline} className="w-12 h-12" />
             </div>
 
             <div className="flex flex-col flex-1 pl-3 min-w-0 justify-center">
                 <div className="flex justify-between items-center mb-0.5">
-                    <span className={`text-base font-semibold truncate ${unreadCount > 0 ? 'text-(--color-text-primary) font-bold' : 'text-(--color-text-primary)'}`}>
+                    <span className={`text-base font-semibold truncate ${unreadCount > 0 ? 'text-slate-100 font-bold' : 'text-slate-100'}`}>
                         {name}
                     </span>
-                    <span className={`text-xs ${unreadCount > 0 ? 'text-(--color-primary) font-bold' : 'text-(--color-text-secondary)'}`}>
+                    <span className={`text-xs ${unreadCount > 0 ? 'text-primary font-bold' : 'text-slate-500'}`}>
                         {timeLabel}
                     </span>
                 </div>
 
                 <div className="flex justify-between items-center">
-                    <div className="flex items-center text-(--color-text-secondary) text-sm truncate">
+                    <div className="flex items-center text-slate-500 text-sm truncate">
                         {isMyLastMsg && lastMsg && (
                             <span className="mr-1 inline-flex items-center">
                                 {/* Placeholder for message state ticks. 
                                     In proper state logic, we'd check if readBy array has other user */}
-                                <CheckCheck className="w-3.5 h-3.5 text-(--color-tick-grey)" />
+                                <CheckCheck className="w-3.5 h-3.5 text-slate-500" />
                             </span>
                         )}
                         <span className="truncate">{previewText || "No messages yet"}</span>
@@ -90,7 +93,7 @@ export default function ChatListItem({ chat, isActive, onClick }: ChatListItemPr
                         {/* Placeholder for muted icon */}
                         {/* <BellOff className="w-3.5 h-3.5 text-[var(--color-text-secondary)]" /> */}
                         {unreadCount > 0 && (
-                            <div className="flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-(--color-primary) text-white text-[10px] font-bold">
+                            <div className="flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-primary text-black text-[10px] font-bold">
                                 {unreadCount}
                             </div>
                         )}

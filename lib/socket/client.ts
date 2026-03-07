@@ -1,5 +1,4 @@
 import { io, Socket } from 'socket.io-client';
-import { env } from '../env';
 
 let socket: Socket | null = null;
 
@@ -8,7 +7,7 @@ let socket: Socket | null = null;
  */
 export function getSocketClient(): Socket {
     if (!socket) {
-        socket = io(env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000', {
+        socket = io(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000', {
             autoConnect: false,
             withCredentials: true,
         });

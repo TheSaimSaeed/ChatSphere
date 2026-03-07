@@ -41,3 +41,23 @@ export const createDMThunk = createAsyncThunk(
         }
     }
 );
+
+/** Fetches paginated messages for a chat */
+export const fetchMessagesThunk = createAsyncThunk(
+    'chat/fetchMessages',
+    async ({ chatId, before }: { chatId: string, before?: string }, { rejectWithValue }) => {
+        try {
+            const url = before ? `/api/messages?chatId=${chatId}&before=${before}` : `/api/messages?chatId=${chatId}`;
+            const res = await fetch(url);
+            const data = await res.json();
+
+            if (!res.ok) {
+                return rejectWithValue(data.error);
+            }
+
+            return { chatId, messages: data, append: !!before };
+        } catch (error: any) {
+            return rejectWithValue(error.message || 'Failed to fetch messages');
+        }
+    }
+);

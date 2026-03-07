@@ -1,40 +1,31 @@
 "use client";
 
-import * as React from "react";
-import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
+/** Small theme toggle button — cycles between light and dark mode. Safe to use on any background. */
 export function ThemeToggle() {
-    const { setTheme } = useTheme();
+    const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return <div className="size-9" />;
+
+    const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="hover:bg-black/5 dark:hover:bg-white/10 rounded-full h-10 w-10">
-                    <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-[var(--chat-text-primary)]" />
-                    <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-[var(--chat-text-primary)]" />
-                    <span className="sr-only">Toggle theme</span>
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-[var(--chat-bg-surface)] border-[var(--chat-border)]">
-                <DropdownMenuItem onClick={() => setTheme("light")} className="hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer">
-                    Light
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("dark")} className="hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer">
-                    Dark
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("system")} className="hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer">
-                    System
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+        <button
+            type="button"
+            aria-label="Toggle theme"
+            onClick={() => setTheme(isDark ? "light" : "dark")}
+            className="size-9 rounded-full flex items-center justify-center border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-all"
+        >
+            {isDark ? (
+                <span className="material-symbols-outlined text-[1.1rem]" style={{ fontSize: '18px' }}>light_mode</span>
+            ) : (
+                <span className="material-symbols-outlined text-[1.1rem]" style={{ fontSize: '18px', color: '#555' }}>dark_mode</span>
+            )}
+        </button>
     );
 }

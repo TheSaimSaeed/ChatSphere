@@ -82,33 +82,33 @@ export default function NewDMOverlay({ isOpen, onClose }: NewDMOverlayProps) {
                     animate={{ x: 0 }}
                     exit={{ x: '-100%' }}
                     transition={{ duration: 0.2, ease: "easeOut" }}
-                    className="absolute inset-0 z-50 flex flex-col bg-(--color-bg-surface)"
+                    className="absolute inset-0 z-50 flex flex-col bg-(--sidebar-deep)"
                 >
                     {/* Header */}
-                    <div className="flex items-center h-14 px-4 bg-(--color-header) text-white shrink-0 shadow-sm z-10">
+                    <div className="flex items-center h-14 px-4 bg-(--nav-bg) text-white shrink-0 border-b border-white/5">
                         <button onClick={onClose} className="p-2 -ml-2 rounded-full hover:bg-white/10 transition">
                             <ArrowLeft className="w-5 h-5" />
                         </button>
-                        <h2 className="ml-4 font-bold text-lg">New Chat</h2>
+                        <h2 className="ml-4 font-bold text-base">New Chat</h2>
                     </div>
 
                     {/* Search Input */}
-                    <div className="p-3 bg-(--color-bg-base)">
-                        <div className="relative flex items-center bg-white dark:bg-(--color-bg-surface) rounded-lg h-12 shadow-sm">
-                            <Search className="absolute left-4 w-5 h-5 text-(--color-text-secondary) pointer-events-none" />
+                    <div className="p-3 bg-(--sidebar-deep) border-b border-white/5">
+                        <div className="relative flex items-center bg-white/5 border border-white/10 rounded-lg h-11">
+                            <Search className="absolute left-3 w-4 h-4 text-slate-500 pointer-events-none" />
                             <input
                                 autoFocus
                                 type="text"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                                 placeholder="Search by name or email"
-                                className="w-full h-full pl-12 pr-4 bg-transparent outline-none text-base text-(--color-text-primary)"
+                                className="w-full h-full pl-10 pr-4 bg-transparent outline-none text-sm text-slate-200 placeholder:text-slate-600 focus:ring-0"
                             />
                         </div>
                     </div>
 
                     {/* Results / Empty States */}
-                    <div className="flex-1 overflow-y-auto bg-(--color-bg-surface)">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar bg-(--sidebar-deep)">
                         {isLoading && (
                             <div className="flex justify-center p-6">
                                 <Spinner className="w-8 h-8 opacity-50" />
@@ -116,13 +116,13 @@ export default function NewDMOverlay({ isOpen, onClose }: NewDMOverlayProps) {
                         )}
 
                         {!isLoading && query.length > 0 && query.length < 2 && (
-                            <div className="flex flex-col items-center justify-center py-10 px-6 text-center text-(--color-text-secondary)">
+                            <div className="flex flex-col items-center justify-center py-10 px-6 text-center text-slate-500">
                                 <p className="text-sm">Type at least 2 characters to search.</p>
                             </div>
                         )}
 
                         {!isLoading && query.length >= 2 && results.length === 0 && (
-                            <div className="flex flex-col items-center justify-center py-20 px-6 text-center text-(--color-text-secondary)">
+                            <div className="flex flex-col items-center justify-center py-20 px-6 text-center text-slate-500">
                                 <UserIcon className="w-12 h-12 mb-4 opacity-20" />
                                 <p className="text-sm">No users found. Try a different name or email.</p>
                             </div>
@@ -134,12 +134,12 @@ export default function NewDMOverlay({ isOpen, onClose }: NewDMOverlayProps) {
                                     <div
                                         key={user._id}
                                         onClick={() => handleCreateDM(user._id)}
-                                        className="flex items-center h-16 px-4 py-2 cursor-pointer hover:bg-(--color-bg-base) border-b border-(--color-border) last:border-0"
+                                        className="flex items-center h-16 px-4 py-2 cursor-pointer hover:bg-white/5 border-b border-white/5 last:border-0 transition-colors"
                                     >
-                                        <Avatar name={user.name} src={user.avatar} isOnline={user.isOnline} className="w-12 h-12 shrink-0" />
+                                        <Avatar name={user.name} src={user.avatar} isOnline={user.isOnline} className="w-11 h-11 shrink-0" />
                                         <div className="flex flex-col ml-3 overflow-hidden">
-                                            <span className="text-base font-medium text-(--color-text-primary) truncate">{user.name}</span>
-                                            <span className="text-sm text-(--color-text-secondary) truncate">{user.email}</span>
+                                            <span className="text-sm font-semibold text-slate-200 truncate">{user.name}</span>
+                                            <span className="text-xs text-slate-500 truncate">{user.email}</span>
                                         </div>
                                     </div>
                                 ))}
