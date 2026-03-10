@@ -5,17 +5,22 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
 import { fetchMessagesThunk } from "@/store/slices/chatThunks";
 import MessageBubble from "./MessageBubble";
+import TypingIndicator from "./TypingIndicator";
 import { getSocketClient } from "@/lib/socket/client";
+import { SOCKET_EVENTS } from "@/lib/socket/events";
 
 export default function MessageArea() {
     const dispatch = useDispatch<AppDispatch>();
-    const { activeChatId, messagesByChatId } = useSelector((state: RootState) => state.chat);
+    const { activeChatId, messagesByChatId, typingByChatId } = useSelector((state: RootState) => state.chat);
     // Again, assume we can get user ID or we pass it down
     // Since user isn't fully set up in my snippet, I'll pretend we have auth user
     const user = useSelector((state: any) => state.auth?.user);
     const isMockUser = !user?._id;
 
     const messages = messagesByChatId[activeChatId || ""] || [];
+    const typingUsers = typingByChatId[activeChatId || ""] || [];
+    const typersNames = typingUsers.map(u => u.name);
+
     const containerRef = useRef<HTMLDivElement>(null);
     const sentinelRef = useRef<HTMLDivElement>(null);
 
@@ -36,6 +41,12 @@ export default function MessageArea() {
             if (socket.connected) {
                 socket.emit("join_room", activeChatId as string);
             }
+        }
+
+        // Emit message:read whenever active chat changes or new messages arrive
+        const socket = getSocketClient();
+        if (activeChatId) {
+            socket.emit(SOCKET_EVENTS.MESSAGE_READ, { chatId: activeChatId });
         }
     }, [activeChatId, dispatch, messages.length]);
 
@@ -107,7 +118,22 @@ export default function MessageArea() {
             }
         }
         prevMessagesLengthRef.current = messages.length;
-    }, [messages.length]);
+    }, [messages.length, activeChatId]);
+
+    // Scroll manipulation when typing status changes
+    useEffect(() => {
+        if (!containerRef.current || typersNames.length === 0) return;
+
+        const scrollHeight = containerRef.current.scrollHeight;
+        const scrollTop = containerRef.current.scrollTop;
+        const clientHeight = containerRef.current.clientHeight;
+        const currentScrollPos = scrollTop + clientHeight;
+
+        // If user is within ~150px of the bottom, smoothly auto-scroll down so they see the indicator
+        if (scrollHeight - currentScrollPos < 150) {
+            containerRef.current.scrollTo({ top: scrollHeight, behavior: 'smooth' });
+        }
+    }, [typersNames.length]);
 
     return (
         <div className="flex-1 relative flex flex-col overflow-hidden bg-(--chat-bg)">
@@ -182,6 +208,8 @@ export default function MessageArea() {
                         );
                     })}
                 </div>
+
+                <TypingIndicator typers={typersNames} />
             </div>
         </div>
     );

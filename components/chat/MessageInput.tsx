@@ -19,6 +19,7 @@ export default function MessageInput() {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     const isGroup = chats.find(c => c._id === activeChatId)?.isGroup || false;
+    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     // Auto resize
     useEffect(() => {
@@ -30,6 +31,11 @@ export default function MessageInput() {
 
     const handleSend = () => {
         if (!content.trim() || !activeChatId || !user) return;
+
+        if (typingTimeoutRef.current) {
+            clearTimeout(typingTimeoutRef.current);
+            typingTimeoutRef.current = null;
+        }
 
         const payload: SendMessageInput = {
             chatId: activeChatId,
@@ -51,17 +57,14 @@ export default function MessageInput() {
 
         dispatch(addMessage(tempMessage));
 
+        const payloadWithTempId = {
+            ...payload,
+            tempId: tempMessage._id
+        };
+
         const socket = getSocketClient();
-        if (socket.connected) {
-            socket.emit(SOCKET_EVENTS.MESSAGE_SEND, payload);
-        } else {
-            // Fallback REST call
-            fetch("/api/messages", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            }).catch(console.error);
-        }
+        socket.emit(SOCKET_EVENTS.TYPING_STOP, { chatId: activeChatId });
+        socket.emit(SOCKET_EVENTS.MESSAGE_SEND, payloadWithTempId);
 
         setContent("");
         if (textareaRef.current) {
@@ -77,6 +80,25 @@ export default function MessageInput() {
         }
     };
 
+    const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setContent(e.target.value);
+
+        if (!activeChatId) return;
+        const socket = getSocketClient();
+        if (!socket.connected) return;
+
+        if (!typingTimeoutRef.current) {
+            socket.emit(SOCKET_EVENTS.TYPING_START, { chatId: activeChatId });
+        } else {
+            clearTimeout(typingTimeoutRef.current);
+        }
+
+        typingTimeoutRef.current = setTimeout(() => {
+            socket.emit(SOCKET_EVENTS.TYPING_STOP, { chatId: activeChatId });
+            typingTimeoutRef.current = null;
+        }, 2000);
+    };
+
     return (
         <footer className="p-6 bg-(--charcoal) border-t border-white/5 z-10 shrink-0">
             <div className="flex items-center gap-4 bg-white/5 p-2 pl-4 rounded-xl border border-white/10">
@@ -85,7 +107,7 @@ export default function MessageInput() {
                 </button>
                 <input
                     value={content}
-                    onChange={(e) => setContent(e.target.value)}
+                    onChange={handleInput}
                     onKeyDown={handleKeyDown}
                     placeholder="Type a message..."
                     className="flex-1 bg-transparent border-none focus:ring-0 text-sm text-slate-200 placeholder:text-slate-500 outline-none"

@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { connectSocket, disconnectSocket, getSocketClient } from "@/lib/socket/client";
 import { SOCKET_EVENTS } from "@/lib/socket/events";
-import { addMessage, updateMessageStatus, updateChatLastMessage } from "@/store/slices/chatSlice";
+import { addMessage, updateMessageStatus, updateChatLastMessage, addTypingUser, removeTypingUser, markMessagesReadByServer } from "@/store/slices/chatSlice";
 
 export default function ChatLayout({ children }: { children: ReactNode }) {
     const dispatch = useDispatch<AppDispatch>();
@@ -26,12 +26,41 @@ export default function ChatLayout({ children }: { children: ReactNode }) {
         });
 
         socket.on(SOCKET_EVENTS.MESSAGE_DELIVERED, (message) => {
-            dispatch(updateMessageStatus({ chatId: message.chatId, messageId: message._id, status: message.status }));
+            dispatch(updateMessageStatus({
+                chatId: message.chatId,
+                messageId: message._id,
+                tempId: (message as any).tempId,
+                status: message.status
+            }));
         });
 
+        socket.on(SOCKET_EVENTS.TYPING_START, (data) => {
+            dispatch(addTypingUser({ chatId: data.chatId, userId: data.userId, name: data.name }));
+        });
+
+        socket.on(SOCKET_EVENTS.TYPING_STOP, (data) => {
+            dispatch(removeTypingUser({ chatId: data.chatId, userId: data.userId }));
+        });
+
+        socket.on(SOCKET_EVENTS.MESSAGE_READ, (data) => {
+            dispatch(markMessagesReadByServer({ chatId: data.chatId, readBy: data.readBy }));
+        });
+
+        // Artificially restrict Socket.io connections when Chrome Network Tab is set to "Offline"
+        // This solves Chrome DevTools bypassing localhost WebSockets
+        const handleOffline = () => disconnectSocket();
+        const handleOnline = () => connectSocket();
+        window.addEventListener('offline', handleOffline);
+        window.addEventListener('online', handleOnline);
+
         return () => {
+            window.removeEventListener('offline', handleOffline);
+            window.removeEventListener('online', handleOnline);
             socket.off(SOCKET_EVENTS.MESSAGE_RECEIVE);
             socket.off(SOCKET_EVENTS.MESSAGE_DELIVERED);
+            socket.off(SOCKET_EVENTS.TYPING_START);
+            socket.off(SOCKET_EVENTS.TYPING_STOP);
+            socket.off(SOCKET_EVENTS.MESSAGE_READ);
             disconnectSocket();
         };
     }, [dispatch]);

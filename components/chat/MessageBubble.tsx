@@ -19,7 +19,7 @@ export default function MessageBubble({ message, isOutgoing, isConsecutive }: Me
     const renderTicks = () => {
         if (!isOutgoing) return null;
         if (message.status?.readBy?.length > 0) {
-            return <span className="material-symbols-outlined text-(--primary) text-xs">done_all</span>;
+            return <span className="material-symbols-outlined text-[#53bdeb] text-xs">done_all</span>;
         }
         if (message.status?.deliveredTo?.length > 0) {
             return <span className="material-symbols-outlined text-slate-400 text-xs">done_all</span>;

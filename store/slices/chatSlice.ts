@@ -27,7 +27,7 @@ export interface ChatState {
     chats: Chat[];
     activeChatId: string | null;
     messagesByChatId: Record<string, Message[]>;
-    typingByChatId: Record<string, string[]>;
+    typingByChatId: Record<string, { userId: string, name: string }[]>;
 }
 
 const initialState: ChatState = {
@@ -58,6 +58,12 @@ export const chatSlice = createSlice({
             if (!exists) {
                 state.messagesByChatId[msg.chatId].push(msg);
             }
+
+            // hide typing indicator if a new message arrives from that user
+            if (state.typingByChatId[msg.chatId] && msg.senderId) {
+                const senderId = typeof msg.senderId === 'object' ? (msg.senderId as any)._id : msg.senderId;
+                state.typingByChatId[msg.chatId] = state.typingByChatId[msg.chatId].filter(u => u.userId !== senderId?.toString());
+            }
         },
         setMessages: (state, action: PayloadAction<{ chatId: string, messages: Message[], append?: boolean }>) => {
             const { chatId, messages, append } = action.payload;
@@ -69,12 +75,17 @@ export const chatSlice = createSlice({
                 state.messagesByChatId[chatId] = messages;
             }
         },
-        updateMessageStatus: (state, action: PayloadAction<{ chatId: string, messageId: string, status: any }>) => {
-            const { chatId, messageId, status } = action.payload;
+        updateMessageStatus: (state, action: PayloadAction<{ chatId: string, messageId: string, status: any, tempId?: string }>) => {
+            const { chatId, messageId, status, tempId } = action.payload;
             const msgs = state.messagesByChatId[chatId];
             if (msgs) {
-                const msg = msgs.find(m => m._id === messageId);
-                if (msg) msg.status = status;
+                const msg = msgs.find(m => m._id === messageId || (tempId && m._id === tempId));
+                if (msg) {
+                    msg.status = status;
+                    if (tempId && msg._id === tempId) {
+                        msg._id = messageId;
+                    }
+                }
             }
         },
         updateChatLastMessage: (state, action: PayloadAction<{ chatId: string, lastMessage: any }>) => {
@@ -84,6 +95,35 @@ export const chatSlice = createSlice({
                 chat.updatedAt = new Date().toISOString();
                 // sort chats
                 state.chats.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+            }
+        },
+        addTypingUser: (state, action: PayloadAction<{ chatId: string, userId: string, name: string }>) => {
+            const { chatId, userId, name } = action.payload;
+            if (!state.typingByChatId[chatId]) {
+                state.typingByChatId[chatId] = [];
+            }
+            const exists = state.typingByChatId[chatId].find(u => u.userId === userId);
+            if (!exists) {
+                state.typingByChatId[chatId].push({ userId, name });
+            }
+        },
+        removeTypingUser: (state, action: PayloadAction<{ chatId: string, userId: string }>) => {
+            const { chatId, userId } = action.payload;
+            if (state.typingByChatId[chatId]) {
+                state.typingByChatId[chatId] = state.typingByChatId[chatId].filter(u => u.userId !== userId);
+            }
+        },
+        markMessagesReadByServer: (state, action: PayloadAction<{ chatId: string, readBy: string }>) => {
+            const { chatId, readBy } = action.payload;
+            const msgs = state.messagesByChatId[chatId];
+            if (msgs) {
+                msgs.forEach(m => {
+                    const senderId = typeof m.senderId === 'object' ? (m.senderId as any)._id : m.senderId;
+                    if (senderId?.toString() !== readBy && m.status && !m.status.readBy?.includes(readBy)) {
+                        m.status.readBy = m.status.readBy || [];
+                        m.status.readBy.push(readBy);
+                    }
+                });
             }
         }
     },
@@ -110,5 +150,5 @@ export const chatSlice = createSlice({
     },
 });
 
-export const { setChats, setActiveChatId, addMessage, setMessages, updateMessageStatus, updateChatLastMessage } = chatSlice.actions;
+export const { setChats, setActiveChatId, addMessage, setMessages, updateMessageStatus, updateChatLastMessage, addTypingUser, removeTypingUser, markMessagesReadByServer } = chatSlice.actions;
 export default chatSlice.reducer;

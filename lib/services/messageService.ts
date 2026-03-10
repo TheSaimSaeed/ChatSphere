@@ -73,3 +73,21 @@ export async function getMessages(userId: string, chatId: string, before?: strin
 
     return messages.reverse();
 }
+
+/** Updates readBy array for all unread messages in a chat */
+export async function markMessagesAsRead(userId: string, chatId: string) {
+    await connectDB();
+    await Message.updateMany(
+        { chatId, senderId: { $ne: userId }, 'status.readBy': { $ne: userId } },
+        { $addToSet: { 'status.readBy': userId } }
+    );
+}
+
+/** Updates deliveredTo array for a message */
+export async function markMessageAsDelivered(messageId: string, userIds: string[]) {
+    await connectDB();
+    const updated = await Message.findByIdAndUpdate(messageId, {
+        $addToSet: { 'status.deliveredTo': { $each: userIds } }
+    }, { new: true }).populate('senderId', 'name avatar').lean();
+    return updated;
+}
