@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from "@/store";
 import { getSocketClient } from "@/lib/socket/client";
 import { SOCKET_EVENTS } from "@/lib/socket/events";
 import { SendMessageInput } from "@/lib/validations/messageSchemas";
-import { addMessage } from "@/store/slices/chatSlice";
+import { addMessage, updateMessageStatus } from "@/store/slices/chatSlice";
 
 export default function MessageInput() {
     const dispatch = useDispatch<AppDispatch>();
@@ -63,8 +63,26 @@ export default function MessageInput() {
         };
 
         const socket = getSocketClient();
-        socket.emit(SOCKET_EVENTS.TYPING_STOP, { chatId: activeChatId });
-        socket.emit(SOCKET_EVENTS.MESSAGE_SEND, payloadWithTempId);
+        if (socket.connected) {
+            socket.emit(SOCKET_EVENTS.TYPING_STOP, { chatId: activeChatId });
+            socket.emit(SOCKET_EVENTS.MESSAGE_SEND, payloadWithTempId);
+        } else {
+            // HTTP Fallback: Crucial for Vercel where WebSockets fundamentally don't run
+            fetch('/api/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payloadWithTempId)
+            }).then(res => res.json()).then(savedMsg => {
+                if (savedMsg._id) {
+                    dispatch(updateMessageStatus({
+                        chatId: activeChatId,
+                        messageId: savedMsg._id,
+                        tempId: tempMessage._id,
+                        status: savedMsg.status || { sent: true }
+                    }));
+                }
+            }).catch(console.error);
+        }
 
         setContent("");
         if (textareaRef.current) {
