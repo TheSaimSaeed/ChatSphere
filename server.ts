@@ -6,15 +6,13 @@ import next from 'next';
 const { loadEnvConfig } = require('@next/env');
 loadEnvConfig(process.cwd());
 
-import { initSocketServer } from './lib/socket/server';
-
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
 const port = parseInt(process.env.PORT || '3000', 10);
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 
-app.prepare().then(() => {
+app.prepare().then(async () => {
     const server = createServer(async (req, res) => {
         try {
             const parsedUrl = parse(req.url!, true);
@@ -26,7 +24,8 @@ app.prepare().then(() => {
         }
     });
 
-    // Initialize Socket.io server
+    // Initialize Socket.io server (imported dynamically to prevent ESM hoisting env bugs)
+    const { initSocketServer } = await import('./lib/socket/server');
     initSocketServer(server);
 
     server
