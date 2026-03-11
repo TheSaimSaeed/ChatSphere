@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
 import { Avatar } from "@/components/shared/Avatar";
 import { setActiveChatId } from "@/store/slices/chatSlice";
+import { format, isToday, isYesterday, differenceInDays } from "date-fns";
 
 /** Displays the header for the active chat containing contact details and actions */
 export default function ChatHeader() {
@@ -22,8 +23,25 @@ export default function ChatHeader() {
     const contact = !activeChat.isGroup ? activeChat.participants.find((p: any) => p._id !== user._id) : null;
 
     const name = activeChat.isGroup ? activeChat.name : (contact?.name || 'Unknown');
-    const avatarImg = activeChat.isGroup ? activeChat.avatar : contact?.avatar;
-    const presence = contact?.isOnline ? 'Online' : 'Offline'; // Slice 6 Presence Prep
+    const avatarImg = contact?.avatar;
+
+    let presenceText = 'Offline';
+    if (activeChat.isGroup) {
+        presenceText = `${activeChat.participants.length} members`;
+    } else if (contact?.isOnline) {
+        presenceText = 'Online';
+    } else if (contact?.lastSeen) {
+        const lastSeenDate = new Date(contact.lastSeen);
+        if (isToday(lastSeenDate)) {
+            presenceText = `Last seen today at ${format(lastSeenDate, 'HH:mm')}`;
+        } else if (isYesterday(lastSeenDate)) {
+            presenceText = `Last seen yesterday`;
+        } else if (differenceInDays(new Date(), lastSeenDate) < 7) {
+            presenceText = `Last seen ${format(lastSeenDate, 'EEEE')}`;
+        } else {
+            presenceText = `Last seen ${format(lastSeenDate, 'dd MMM')}`;
+        }
+    }
 
     return (
         <header className="h-16 flex items-center justify-between px-6 border-b border-white/5 z-20 bg-(--chat-bg) shrink-0">
@@ -36,14 +54,14 @@ export default function ChatHeader() {
                 </button>
                 <div className="relative">
                     <Avatar name={name} src={avatarImg} className="size-10 rounded-full object-cover" />
-                    {presence === 'Online' && (
+                    {!activeChat.isGroup && contact?.isOnline && (
                         <div className="absolute bottom-0 right-0 size-2.5 bg-(--primary) border-2 border-[#0D1117] rounded-full"></div>
                     )}
                 </div>
                 <div>
                     <h2 className="font-bold text-slate-100">{name}</h2>
-                    <p className="text-[10px] text-(--primary) font-bold uppercase tracking-wider">
-                        {presence === 'Online' ? 'Active Now' : 'Offline'}
+                    <p className="text-xs text-(--primary) opacity-80 mt-0.5">
+                        {presenceText}
                     </p>
                 </div>
             </div>

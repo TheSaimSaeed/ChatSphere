@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { connectSocket, disconnectSocket, getSocketClient } from "@/lib/socket/client";
 import { SOCKET_EVENTS } from "@/lib/socket/events";
-import { addMessage, updateMessageStatus, updateChatLastMessage, addTypingUser, removeTypingUser, markMessagesReadByServer } from "@/store/slices/chatSlice";
+import { addMessage, updateMessageStatus, updateChatLastMessage, addTypingUser, removeTypingUser, markMessagesReadByServer, updateUserPresence } from "@/store/slices/chatSlice";
 
 export default function ChatLayout({ children }: { children: ReactNode }) {
     const dispatch = useDispatch<AppDispatch>();
@@ -46,6 +46,14 @@ export default function ChatLayout({ children }: { children: ReactNode }) {
             dispatch(markMessagesReadByServer({ chatId: data.chatId, readBy: data.readBy }));
         });
 
+        socket.on(SOCKET_EVENTS.PRESENCE_ONLINE, (data) => {
+            dispatch(updateUserPresence({ userId: data.userId, isOnline: true }));
+        });
+
+        socket.on(SOCKET_EVENTS.PRESENCE_OFFLINE, (data) => {
+            dispatch(updateUserPresence({ userId: data.userId, isOnline: false, lastSeen: data.lastSeen }));
+        });
+
         // Artificially restrict Socket.io connections when Chrome Network Tab is set to "Offline"
         // This solves Chrome DevTools bypassing localhost WebSockets
         const handleOffline = () => disconnectSocket();
@@ -61,6 +69,8 @@ export default function ChatLayout({ children }: { children: ReactNode }) {
             socket.off(SOCKET_EVENTS.TYPING_START);
             socket.off(SOCKET_EVENTS.TYPING_STOP);
             socket.off(SOCKET_EVENTS.MESSAGE_READ);
+            socket.off(SOCKET_EVENTS.PRESENCE_ONLINE);
+            socket.off(SOCKET_EVENTS.PRESENCE_OFFLINE);
             disconnectSocket();
         };
     }, [dispatch]);

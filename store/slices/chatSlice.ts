@@ -125,6 +125,21 @@ export const chatSlice = createSlice({
                     }
                 });
             }
+        },
+        updateUserPresence: (state, action: PayloadAction<{ userId: string, isOnline: boolean, lastSeen?: string }>) => {
+            const { userId, isOnline, lastSeen } = action.payload;
+            state.chats.forEach(chat => {
+                if (!chat.isGroup) {
+                    chat.participants.forEach(p => {
+                        if (p._id === userId) {
+                            p.isOnline = isOnline;
+                            if (lastSeen) {
+                                p.lastSeen = lastSeen;
+                            }
+                        }
+                    });
+                }
+            });
         }
     },
     extraReducers: (builder) => {
@@ -150,5 +165,5 @@ export const chatSlice = createSlice({
     },
 });
 
-export const { setChats, setActiveChatId, addMessage, setMessages, updateMessageStatus, updateChatLastMessage, addTypingUser, removeTypingUser, markMessagesReadByServer } = chatSlice.actions;
+export const { setChats, setActiveChatId, addMessage, setMessages, updateMessageStatus, updateChatLastMessage, addTypingUser, removeTypingUser, markMessagesReadByServer, updateUserPresence } = chatSlice.actions;
 export default chatSlice.reducer;
