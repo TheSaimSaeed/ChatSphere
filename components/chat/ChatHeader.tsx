@@ -10,18 +10,20 @@ import { setActiveChatId } from "@/store/slices/chatSlice";
 export default function ChatHeader() {
     const dispatch = useDispatch<AppDispatch>();
     const { activeChatId, chats } = useSelector((state: RootState) => state.chat);
+    const { user } = useSelector((state: RootState) => state.auth);
 
     const activeChat = useMemo(() => {
         return chats.find((c) => c._id === activeChatId);
     }, [activeChatId, chats]);
 
-    if (!activeChat) return null;
+    if (!activeChat || !user) return null;
 
-    // Contact info inside DM
-    const contact = !activeChat.isGroup ? activeChat.participants.find((p: any) => p._id !== 'mock') : null;
-    // Wait, we need current userId. But for now we just find the other participant. Let's assume there's 1 other.
-    const name = activeChat.isGroup ? activeChat.name : (activeChat.participants[0]?.name || 'Unknown');
-    const presence = 'Online'; // Placeholder for Slice 6 Presence 
+    // Filter out the logged-in user to find the actual contact we are talking to
+    const contact = !activeChat.isGroup ? activeChat.participants.find((p: any) => p._id !== user._id) : null;
+
+    const name = activeChat.isGroup ? activeChat.name : (contact?.name || 'Unknown');
+    const avatarImg = activeChat.isGroup ? activeChat.avatar : contact?.avatar;
+    const presence = contact?.isOnline ? 'Online' : 'Offline'; // Slice 6 Presence Prep
 
     return (
         <header className="h-16 flex items-center justify-between px-6 border-b border-white/5 z-20 bg-(--chat-bg) shrink-0">
@@ -33,13 +35,15 @@ export default function ChatHeader() {
                     <span className="material-symbols-outlined">chevron_left</span>
                 </button>
                 <div className="relative">
-                    <Avatar name={name} className="size-10 rounded-full object-cover" />
-                    <div className="absolute bottom-0 right-0 size-2.5 bg-(--primary) border-2 border-[#0D1117] rounded-full"></div>
+                    <Avatar name={name} src={avatarImg} className="size-10 rounded-full object-cover" />
+                    {presence === 'Online' && (
+                        <div className="absolute bottom-0 right-0 size-2.5 bg-(--primary) border-2 border-[#0D1117] rounded-full"></div>
+                    )}
                 </div>
                 <div>
                     <h2 className="font-bold text-slate-100">{name}</h2>
                     <p className="text-[10px] text-(--primary) font-bold uppercase tracking-wider">
-                        {presence === 'Online' ? 'Active Now' : presence}
+                        {presence === 'Online' ? 'Active Now' : 'Offline'}
                     </p>
                 </div>
             </div>
