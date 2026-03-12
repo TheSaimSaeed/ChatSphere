@@ -19,3 +19,20 @@ export async function searchUsers(userId: string, query: string) {
 
     return users;
 }
+
+/** Updates the profile fields for the authenticated user. */
+export async function updateProfile(userId: string, data: { name?: string, statusMessage?: string, phone?: string, avatar?: string }) {
+    await connectDB();
+
+    const user = await User.findByIdAndUpdate(
+        userId,
+        { $set: data },
+        { new: true, runValidators: true }
+    ).select('-password').lean();
+
+    if (!user) {
+        throw new Error('User not found');
+    }
+    
+    return user;
+}

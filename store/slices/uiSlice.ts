@@ -11,6 +11,7 @@ export interface UiState {
     soundEnabled: boolean;
     notificationsEnabled: boolean;
     toasts: Toast[];
+    isContactInfoOpen: boolean;
 }
 
 const initialState: UiState = {
@@ -18,6 +19,7 @@ const initialState: UiState = {
     soundEnabled: true,
     notificationsEnabled: false,
     toasts: [],
+    isContactInfoOpen: false,
 };
 
 /** Manages global UI preferences, theming, and the toast notification system. */
@@ -37,8 +39,11 @@ export const uiSlice = createSlice({
         removeToast: (state, action: PayloadAction<string>) => {
             state.toasts = state.toasts.filter(toast => toast.id !== action.payload);
         },
+        setContactInfoOpen: (state, action: PayloadAction<boolean>) => {
+            state.isContactInfoOpen = action.payload;
+        },
     },
 });
 
-export const { setTheme, addToast, removeToast } = uiSlice.actions;
+export const { setTheme, addToast, removeToast, setContactInfoOpen } = uiSlice.actions;
 export default uiSlice.reducer;

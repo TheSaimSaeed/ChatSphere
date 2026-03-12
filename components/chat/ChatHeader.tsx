@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
 import { Avatar } from "@/components/shared/Avatar";
 import { setActiveChatId } from "@/store/slices/chatSlice";
+import { setContactInfoOpen } from "@/store/slices/uiSlice";
 import { format, isToday, isYesterday, differenceInDays } from "date-fns";
 
 /** Displays the header for the active chat containing contact details and actions */
@@ -52,17 +53,22 @@ export default function ChatHeader() {
                 >
                     <span className="material-symbols-outlined">chevron_left</span>
                 </button>
-                <div className="relative">
-                    <Avatar name={name} src={avatarImg} className="size-10 rounded-full object-cover" />
-                    {!activeChat.isGroup && contact?.isOnline && (
-                        <div className="absolute bottom-0 right-0 size-2.5 bg-(--primary) border-2 border-[#0D1117] rounded-full"></div>
-                    )}
-                </div>
-                <div>
-                    <h2 className="font-bold text-slate-100">{name}</h2>
-                    <p className="text-xs text-(--primary) opacity-80 mt-0.5">
-                        {presenceText}
-                    </p>
+                <div 
+                    className="flex items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => dispatch(setContactInfoOpen(true))}
+                >
+                    <div className="relative">
+                        <Avatar name={name} src={avatarImg} className="size-10 rounded-full object-cover" />
+                        {!activeChat.isGroup && contact?.isOnline && (
+                            <div className="absolute bottom-0 right-0 size-2.5 bg-(--primary) border-2 border-[#0D1117] rounded-full"></div>
+                        )}
+                    </div>
+                    <div>
+                        <h2 className="font-bold text-slate-100">{name}</h2>
+                        <p className="text-xs text-(--primary) opacity-80 mt-0.5">
+                            {presenceText}
+                        </p>
+                    </div>
                 </div>
             </div>
 

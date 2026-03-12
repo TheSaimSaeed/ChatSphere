@@ -5,6 +5,7 @@ export interface User {
     name: string;
     email: string;
     avatar: string | null;
+    phone?: string;
     statusMessage: string;
     isVerified: boolean;
 }
@@ -31,6 +32,11 @@ export const authSlice = createSlice({
             state.isAuthenticated = true;
             state.isLoading = false;
         },
+        updateUser: (state, action: PayloadAction<Partial<User>>) => {
+            if (state.user) {
+                state.user = { ...state.user, ...action.payload };
+            }
+        },
         logoutUser: (state) => {
             state.user = null;
             state.isAuthenticated = false;
@@ -42,5 +48,5 @@ export const authSlice = createSlice({
     },
 });
 
-export const { setUser, logoutUser, setAuthLoading } = authSlice.actions;
+export const { setUser, updateUser, logoutUser, setAuthLoading } = authSlice.actions;
 export default authSlice.reducer;

@@ -8,10 +8,15 @@ import { AppDispatch, RootState } from "@/store";
 import { connectSocket, disconnectSocket, getSocketClient } from "@/lib/socket/client";
 import { SOCKET_EVENTS } from "@/lib/socket/events";
 import { addMessage, updateMessageStatus, updateChatLastMessage, addTypingUser, removeTypingUser, markMessagesReadByServer, updateUserPresence } from "@/store/slices/chatSlice";
+import { usePathname } from "next/navigation";
 
 export default function ChatLayout({ children }: { children: ReactNode }) {
     const dispatch = useDispatch<AppDispatch>();
     const { activeChatId } = useSelector((state: RootState) => state.chat);
+    const pathname = usePathname();
+
+    const isProfilePage = pathname === '/profile';
+    const isMobileDetailView = !!activeChatId || isProfilePage;
 
     useEffect(() => {
         connectSocket();
@@ -77,13 +82,20 @@ export default function ChatLayout({ children }: { children: ReactNode }) {
 
     return (
         <div className="flex h-screen w-full overflow-hidden bg-(--color-bg-base)">
+            {/* NarrowSidebar — always visible on desktop */}
             <div className="hidden md:flex flex-col h-full shrink-0">
                 <NarrowSidebar />
             </div>
-            <div className={`${activeChatId ? 'hidden md:flex' : 'flex'} flex-col h-full shrink-0 w-full md:w-80`}>
-                <Sidebar />
-            </div>
-            <div className={`${activeChatId ? 'flex' : 'hidden md:flex'} flex-1 h-full min-w-0 bg-[#0D1117]`}>
+
+            {/* Chat Sidebar — hidden on profile page */}
+            {!isProfilePage && (
+                <div className={`${isMobileDetailView ? 'hidden md:flex' : 'flex'} flex-col h-full shrink-0 w-full md:w-80`}>
+                    <Sidebar />
+                </div>
+            )}
+
+            {/* Main content area */}
+            <div className={`${isMobileDetailView ? 'flex' : 'hidden md:flex'} flex-1 h-full min-w-0 bg-[#0D1117]`}>
                 {children}
             </div>
         </div>

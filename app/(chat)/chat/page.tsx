@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import ChatHeader from "@/components/chat/ChatHeader";
 import MessageArea from "@/components/chat/MessageArea";
 import MessageInput from "@/components/chat/MessageInput";
+import ContactInfoPanel from "@/components/chat/ContactInfoPanel";
 
 function ChatDashboardContent() {
     const { activeChatId } = useSelector((state: RootState) => state.chat);
@@ -21,6 +22,7 @@ function ChatDashboardContent() {
                 <ChatHeader />
                 <MessageArea />
                 <MessageInput />
+                <ContactInfoPanel />
             </main>
         );
     }

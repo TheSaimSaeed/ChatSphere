@@ -142,3 +142,52 @@ export const checkSessionThunk = createAsyncThunk(
         }
     }
 );
+
+export const updateProfileThunk = createAsyncThunk(
+    'auth/updateProfile',
+    async (payload: { name?: string; statusMessage?: string; phone?: string; avatar?: string }, { rejectWithValue, dispatch }) => {
+        try {
+            const response = await fetch(`${API_URL}/users/me`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                return rejectWithValue(data.error || 'Failed to update profile');
+            }
+
+            dispatch(setUser(data.user));
+            return data.user;
+        } catch (error: any) {
+            return rejectWithValue(error.message || 'An error occurred updating profile');
+        }
+    }
+);
+
+export const uploadMediaThunk = createAsyncThunk(
+    'media/upload',
+    async (file: File, { rejectWithValue }) => {
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch(`${API_URL}/media/upload`, {
+                method: 'POST',
+                body: formData, // fetch will automatically set the correct Content-Type for FormData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                return rejectWithValue(data.error || 'Media upload failed');
+            }
+
+            return data; // { url, publicId }
+        } catch (error: any) {
+            return rejectWithValue(error.message || 'An error occurred uploading media');
+        }
+    }
+);
