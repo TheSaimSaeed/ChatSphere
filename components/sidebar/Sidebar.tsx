@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouter, usePathname } from 'next/navigation';
 import { RootState, AppDispatch } from '@/store';
 import { fetchChatsThunk } from '@/store/slices/chatThunks';
 import { setActiveChatId } from '@/store/slices/chatSlice';
@@ -11,6 +12,8 @@ import NewDMOverlay from './NewDMOverlay';
 /** Renders the main sidebar containing the chat list, search bar, and new DM overlay. */
 export default function Sidebar() {
     const dispatch = useDispatch<AppDispatch>();
+    const router = useRouter();
+    const pathname = usePathname();
     const { chats, activeChatId } = useSelector((state: RootState) => state.chat);
     const { user } = useSelector((state: RootState) => state.auth);
 
@@ -78,10 +81,20 @@ export default function Sidebar() {
             <header className="bg-[#0a1f1d] px-5 pt-6 pb-4 md:hidden shrink-0">
                 <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
-                        <div className="size-10 rounded-full border-2 border-(--primary)/30 overflow-hidden cursor-pointer">
-                            <img alt="My Profile" className="w-full h-full object-cover" src={user?.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuCtL_U612nlfE8sJNWQSctdn7exIM6mBAVuVePZkvkH-RD6qbWded7_qmOZrBPgC7pQgOCHFisLmrOFQ7zqa5xDJjFa7n3qO5bPMfW1T_fm3mumK1TKb76SAWy_SM8InrWyc4_9XoF0y_MqxEQheJ5VY4kNp-p4gfN8Mbo6OI-vqUle64g-ROB38nRppuomIOAghwb1WFOYFtXR-jtoGEaIyOl6WkqG716qey_bX7_XkUOnWYvuCPWnxi1L0V_3xyqjzbMe5ApOtg"} />
-                        </div>
-                        <h1 className="text-xl font-bold text-white font-display" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>ChatSphere</h1>
+                        {/* Avatar — tapping navigates to /profile */}
+                        <button
+                            onClick={() => router.push('/profile')}
+                            className="size-10 rounded-full border-2 border-(--primary)/30 overflow-hidden cursor-pointer hover:border-(--primary)/60 transition-colors"
+                        >
+                            {user?.avatar ? (
+                                <img alt="My Profile" className="w-full h-full object-cover" src={user.avatar} />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-(--primary)/20 text-(--primary) font-bold text-sm">
+                                    {user?.name?.[0]?.toUpperCase() ?? '?'}
+                                </div>
+                            )}
+                        </button>
+                        <h1 className="text-xl font-bold text-white" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>ChatSphere</h1>
                     </div>
                     <div className="flex items-center gap-1 text-white/80">
                         <button onClick={() => setIsNewDMOpen(true)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
@@ -163,22 +176,28 @@ export default function Sidebar() {
 
             {/* Mobile Bottom Navigation */}
             <nav className="md:hidden absolute bottom-0 left-0 right-0 bg-[#121212]/95 backdrop-blur-lg border-t border-white/5 px-8 py-3 flex justify-between items-center z-30">
-                <div className="flex flex-col items-center gap-1 text-(--primary) cursor-pointer">
-                    <span className="material-symbols-outlined text-2xl fill-1">chat_bubble</span>
+                <button
+                    onClick={() => router.push('/chat')}
+                    className={`flex flex-col items-center gap-1 transition-colors ${pathname.startsWith('/chat') ? 'text-(--primary)' : 'text-slate-500 hover:text-white'}`}
+                >
+                    <span className={`material-symbols-outlined text-2xl ${pathname.startsWith('/chat') ? 'fill-1' : ''}`}>chat_bubble</span>
                     <span className="text-[10px] font-bold uppercase tracking-wider">Chats</span>
-                </div>
-                <div className="flex flex-col items-center gap-1 text-slate-500 hover:text-white transition-colors cursor-pointer">
+                </button>
+                <button className="flex flex-col items-center gap-1 text-slate-500 hover:text-white transition-colors">
                     <span className="material-symbols-outlined text-2xl">call</span>
                     <span className="text-[10px] font-bold uppercase tracking-wider">Calls</span>
-                </div>
-                <div className="flex flex-col items-center gap-1 text-slate-500 hover:text-white transition-colors cursor-pointer">
-                    <span className="material-symbols-outlined text-2xl">person</span>
+                </button>
+                <button
+                    onClick={() => router.push('/profile')}
+                    className={`flex flex-col items-center gap-1 transition-colors ${pathname.startsWith('/profile') ? 'text-(--primary)' : 'text-slate-500 hover:text-white'}`}
+                >
+                    <span className={`material-symbols-outlined text-2xl ${pathname.startsWith('/profile') ? 'fill-1' : ''}`}>person</span>
                     <span className="text-[10px] font-bold uppercase tracking-wider">Profile</span>
-                </div>
-                <div className="flex flex-col items-center gap-1 text-slate-500 hover:text-white transition-colors cursor-pointer">
+                </button>
+                <button className="flex flex-col items-center gap-1 text-slate-500 hover:text-white transition-colors">
                     <span className="material-symbols-outlined text-2xl">settings</span>
                     <span className="text-[10px] font-bold uppercase tracking-wider">Settings</span>
-                </div>
+                </button>
             </nav>
 
             <button

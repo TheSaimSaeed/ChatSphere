@@ -82,20 +82,35 @@ export default function ChatLayout({ children }: { children: ReactNode }) {
 
     return (
         <div className="flex h-screen w-full overflow-hidden bg-(--color-bg-base)">
-            {/* NarrowSidebar — always visible on desktop */}
+            {/* NarrowSidebar — desktop only */}
             <div className="hidden md:flex flex-col h-full shrink-0">
                 <NarrowSidebar />
             </div>
 
-            {/* Chat Sidebar — hidden on profile page */}
-            {!isProfilePage && (
-                <div className={`${isMobileDetailView ? 'hidden md:flex' : 'flex'} flex-col h-full shrink-0 w-full md:w-80`}>
-                    <Sidebar />
-                </div>
-            )}
+            {/*
+              Chat Sidebar visibility rules:
+              - /profile on DESKTOP  → hidden (md:hidden in the isProfilePage branch)
+              - /profile on MOBILE   → shown but only bottom-nav matters; we keep it rendered
+                                       by using a zero-size container so bottom nav is reachable
+              - Active chat on MOBILE → hidden (full-screen chat view)
+              - Default              → shown full-width on mobile, fixed width on desktop
+            */}
+            <div className={[
+                'flex-col h-full shrink-0 w-full md:w-80',
+                isProfilePage
+                    ? 'hidden md:hidden'        // desktop: gone; mobile: gone (profile takes over)
+                    : isMobileDetailView
+                        ? 'hidden md:flex'      // chat open: mobile hidden, desktop shown
+                        : 'flex',              // default: always shown
+            ].join(' ')}>
+                <Sidebar />
+            </div>
 
-            {/* Main content area */}
-            <div className={`${isMobileDetailView ? 'flex' : 'hidden md:flex'} flex-1 h-full min-w-0 bg-[#0D1117]`}>
+            {/* Main content area — full screen on mobile for profile & active chat */}
+            <div className={[
+                'flex-1 h-full min-w-0 bg-[#0D1117]',
+                isMobileDetailView ? 'flex' : 'hidden md:flex',
+            ].join(' ')}>
                 {children}
             </div>
         </div>

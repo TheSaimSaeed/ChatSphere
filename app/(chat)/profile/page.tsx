@@ -157,13 +157,14 @@ export default function ProfilePage() {
     // ── Render ─────────────────────────────────────────────────────────────
     return (
         <div className="flex w-full h-full overflow-y-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.1) transparent' }}>
-            <div className="max-w-[640px] w-full mx-auto p-4 md:p-8 flex flex-col pt-10">
+            <div className="max-w-[640px] w-full mx-auto p-4 md:p-8 flex flex-col pt-6 md:pt-10 pb-28 md:pb-10">
 
                 {/* ── Header ── */}
                 <div className="flex items-center gap-4 mb-8">
+                    {/* Back to Chats — desktop only; mobile uses bottom nav */}
                     <button
                         onClick={() => router.push('/chat')}
-                        className="p-2 -ml-2 hover:bg-white/5 rounded-full transition text-slate-400 hover:text-slate-100"
+                        className="hidden md:flex p-2 -ml-2 hover:bg-white/5 rounded-full transition text-slate-400 hover:text-slate-100"
                     >
                         <ArrowLeft className="w-5 h-5" />
                     </button>
@@ -343,6 +344,29 @@ export default function ProfilePage() {
                 </div>
 
             </div>
+
+            {/* Mobile Bottom Navigation — visible only on mobile */}
+            <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#121212]/95 backdrop-blur-lg border-t border-white/5 px-8 py-3 flex justify-between items-center z-30">
+                <button
+                    onClick={() => router.push('/chat')}
+                    className="flex flex-col items-center gap-1 text-slate-500 hover:text-white transition-colors"
+                >
+                    <span className="material-symbols-outlined text-2xl">chat_bubble</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider">Chats</span>
+                </button>
+                <button className="flex flex-col items-center gap-1 text-slate-500 hover:text-white transition-colors">
+                    <span className="material-symbols-outlined text-2xl">call</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider">Calls</span>
+                </button>
+                <button className="flex flex-col items-center gap-1 text-(--primary) transition-colors">
+                    <span className="material-symbols-outlined text-2xl fill-1">person</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider">Profile</span>
+                </button>
+                <button className="flex flex-col items-center gap-1 text-slate-500 hover:text-white transition-colors">
+                    <span className="material-symbols-outlined text-2xl">settings</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider">Settings</span>
+                </button>
+            </nav>
         </div>
     );
 }
