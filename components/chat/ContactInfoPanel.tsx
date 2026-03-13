@@ -5,44 +5,45 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
 import { setContactInfoOpen } from "@/store/slices/uiSlice";
 import { Avatar } from "@/components/shared/Avatar";
-import { X, Phone, Mail, Ban, ChevronLeft, Image as ImageIcon } from "lucide-react";
+import { X, Phone, Mail, Ban, Image as ImageIcon } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { format, isToday, isYesterday, differenceInDays } from "date-fns";
 
+/** Slide-in panel that displays detailed contact information for the active DM conversation. */
 export default function ContactInfoPanel() {
     const dispatch = useDispatch<AppDispatch>();
     const { isContactInfoOpen } = useSelector((state: RootState) => state.ui);
     const { activeChatId, chats } = useSelector((state: RootState) => state.chat);
     const { user } = useSelector((state: RootState) => state.auth);
 
-    const activeChat = useMemo(() => {
-        return chats.find((c) => c._id === activeChatId);
-    }, [activeChatId, chats]);
+    const activeChat = useMemo(
+        () => chats.find((c) => c._id === activeChatId),
+        [activeChatId, chats]
+    );
 
-    if (!user || !activeChat) return null;
+    if (!user || !activeChat || activeChat.isGroup) return null;
 
-    // Contact info is purely for DMs in this slice MVP. 
-    // We will handle group info separately or dynamically scale in slices to come.
-    const isGroup = activeChat.isGroup;
-    const contact = !isGroup ? activeChat.participants.find((p: any) => p._id !== user._id) : null;
+    const contact = activeChat.participants.find((p: any) => p._id !== user._id);
+    if (!contact) return null;
 
-    if (isGroup || !contact) {
-        return null;
-    }
+    // ── Presence text ──────────────────────────────────────────────────────
+    let presenceLabel = "Offline";
+    let presenceColor = "text-slate-400";
 
-    let presenceText = 'Offline';
-    if (contact?.isOnline) {
-        presenceText = 'Online';
-    } else if (contact?.lastSeen) {
+    if (contact.isOnline) {
+        presenceLabel = "Active Now";
+        presenceColor = "text-[var(--color-online)]";
+    } else if (contact.lastSeen) {
         const lastSeenDate = new Date(contact.lastSeen);
+        presenceColor = "text-slate-400";
         if (isToday(lastSeenDate)) {
-            presenceText = `Last seen today at ${format(lastSeenDate, 'HH:mm')}`;
+            presenceLabel = `Last seen today at ${format(lastSeenDate, "HH:mm")}`;
         } else if (isYesterday(lastSeenDate)) {
-            presenceText = `Last seen yesterday`;
+            presenceLabel = "Last seen yesterday";
         } else if (differenceInDays(new Date(), lastSeenDate) < 7) {
-            presenceText = `Last seen ${format(lastSeenDate, 'EEEE')}`;
+            presenceLabel = `Last seen ${format(lastSeenDate, "EEEE")}`;
         } else {
-            presenceText = `Last seen ${format(lastSeenDate, 'dd MMM')}`;
+            presenceLabel = `Last seen ${format(lastSeenDate, "dd MMM")}`;
         }
     }
 
@@ -50,94 +51,187 @@ export default function ContactInfoPanel() {
         <AnimatePresence>
             {isContactInfoOpen && (
                 <motion.div
-                    initial={{ x: '100%' }}
+                    key="contact-info-panel"
+                    initial={{ x: "100%" }}
                     animate={{ x: 0 }}
-                    exit={{ x: '100%' }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    className="absolute top-0 right-0 h-full w-full md:w-[360px] bg-[var(--color-bg-surface)] border-l border-[var(--color-border)] z-50 flex flex-col shadow-xl"
+                    exit={{ x: "100%" }}
+                    transition={{ type: "tween", duration: 0.22, ease: "easeOut" }}
+                    className="absolute top-0 right-0 h-full w-full md:w-[340px] z-50 flex flex-col"
+                    style={{ background: "#111B22" }}
                 >
-                    {/* Header */}
-                    <div className="h-16 flex items-center px-4 border-b border-[var(--color-border)] shrink-0">
-                        <button 
+                    {/* ── Top Header bar ──────────────────────────────────────── */}
+                    <div
+                        className="h-16 shrink-0 flex items-center gap-3 px-4 border-b"
+                        style={{ borderColor: "#2A3942" }}
+                    >
+                        <button
                             onClick={() => dispatch(setContactInfoOpen(false))}
-                            className="p-2 -ml-2 rounded-full hover:bg-white/5 transition text-slate-400 hover:text-white md:hidden"
-                        >
-                            <ChevronLeft className="w-5 h-5" />
-                        </button>
-                        <h2 className="text-lg font-bold text-slate-100 flex-1 ml-2 md:ml-0">Contact Info</h2>
-                        <button 
-                            onClick={() => dispatch(setContactInfoOpen(false))}
-                            className="p-2 -mr-2 rounded-full hover:bg-white/5 transition text-slate-400 hover:text-white hidden md:block"
+                            className="p-1.5 rounded-full hover:bg-white/8 transition text-slate-400 hover:text-white"
+                            aria-label="Close contact info"
                         >
                             <X className="w-5 h-5" />
                         </button>
+                        <h2 className="text-[15px] font-semibold text-slate-100 tracking-tight">
+                            Contact Info
+                        </h2>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col items-center pt-8 pb-12 px-6">
-                        {/* Avatar & Basic Info */}
-                        <Avatar name={contact.name} src={contact.avatar} className="w-24 h-24 rounded-full mb-4 shadow-lg ring-4 ring-[#0D1117]" />
-                        <h3 className="text-xl font-bold text-slate-100 mb-1 text-center truncate w-full">{contact.name}</h3>
-                        <div className="flex items-center gap-1.5 justify-center mb-6">
-                            {contact.isOnline && <div className="w-2 h-2 rounded-full bg-[var(--color-online)]"></div>}
-                            <span className="text-sm text-[var(--color-online)] opacity-80">{presenceText}</span>
-                        </div>
+                    {/* ── Scrollable body ─────────────────────────────────────── */}
+                    <div
+                        className="flex-1 overflow-y-auto"
+                        style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.08) transparent" }}
+                    >
+                        {/* ── Hero section ─────────────────────────────────────── */}
+                        <div
+                            className="flex flex-col items-center pt-8 pb-6 px-6 border-b"
+                            style={{ borderColor: "#2A3942" }}
+                        >
+                            {/* Avatar with optional online ring */}
+                            <div className="relative mb-4">
+                                <Avatar
+                                    name={contact.name}
+                                    src={contact.avatar}
+                                    className="w-[84px] h-[84px] rounded-full shadow-xl"
+                                />
+                                {contact.isOnline && (
+                                    <span
+                                        className="absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full border-[2.5px]"
+                                        style={{
+                                            background: "var(--color-online)",
+                                            borderColor: "#111B22",
+                                        }}
+                                    />
+                                )}
+                            </div>
 
-                        {/* Details */}
-                        <div className="w-full flex items-center justify-center gap-6 mb-8">
-                            <div className="flex flex-col items-center gap-2 cursor-pointer group">
-                                <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-white/10 transition">
-                                    <Phone className="w-5 h-5 text-slate-400 group-hover:text-[var(--color-primary)]" />
-                                </div>
-                                <span className="text-xs text-slate-400 group-hover:text-slate-200">Call</span>
-                            </div>
-                            <div className="flex flex-col items-center gap-2 cursor-pointer group">
-                                <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-white/10 transition">
-                                    <Mail className="w-5 h-5 text-slate-400 group-hover:text-[var(--color-primary)]" />
-                                </div>
-                                <span className="text-xs text-slate-400 group-hover:text-slate-200">Email</span>
-                            </div>
-                        </div>
+                            {/* Name */}
+                            <h3 className="text-[18px] font-bold text-slate-100 mb-1 text-center leading-tight">
+                                {contact.name}
+                            </h3>
 
-                        <div className="w-full bg-[#0D1117] rounded-xl p-4 border border-[var(--color-border)] flex flex-col gap-4 mb-6">
-                            <div className="flex flex-col">
-                                <span className="text-xs text-slate-500 font-medium mb-1 uppercase tracking-wider">Status</span>
-                                <span className="text-sm text-slate-200 italic">
-                                    {contact.statusMessage || "Hey there! I'm using ChatSphere."}
-                                </span>
-                            </div>
-                            <hr className="border-t border-white/5" />
-                            <div className="flex flex-col">
-                                <span className="text-xs text-slate-500 font-medium mb-1 uppercase tracking-wider">Email address</span>
-                                <span className="text-sm text-slate-200">{contact.email}</span>
-                            </div>
-                            {contact.phone && (
-                                <>
-                                    <hr className="border-t border-white/5" />
-                                    <div className="flex flex-col">
-                                        <span className="text-xs text-slate-500 font-medium mb-1 uppercase tracking-wider">Phone number</span>
-                                        <span className="text-sm text-slate-200">{contact.phone}</span>
-                                    </div>
-                                </>
+                            {/* Presence */}
+                            <p className={`text-[13px] font-medium ${presenceColor}`}>
+                                {presenceLabel}
+                            </p>
+
+                            {/* Status message / bio */}
+                            {contact.statusMessage && (
+                                <p className="mt-3 text-[13px] text-slate-400 text-center italic leading-relaxed max-w-[240px]">
+                                    &ldquo;{contact.statusMessage}&rdquo;
+                                </p>
                             )}
                         </div>
 
-                        {/* Shared Media Placeholder */}
-                        <div className="w-full mb-8">
-                            <div className="flex items-center justify-between mb-3 px-1">
-                                <h4 className="text-sm font-semibold text-slate-300">Shared Media</h4>
-                                <span className="text-xs text-[var(--color-primary)] cursor-pointer hover:underline">View All</span>
-                            </div>
-                            <div className="w-full bg-[#0D1117] rounded-xl p-8 border border-[var(--color-border)] flex flex-col items-center justify-center text-slate-500">
-                                <ImageIcon className="w-8 h-8 mb-2 opacity-30" />
-                                <span className="text-xs">No shared media yet.</span>
+                        {/* ── Contact Details ───────────────────────────────────── */}
+                        <div
+                            className="border-b"
+                            style={{ borderColor: "#2A3942" }}
+                        >
+                            <p
+                                className="px-6 pt-5 pb-2 text-[11px] font-semibold uppercase tracking-widest"
+                                style={{ color: "var(--color-primary)" }}
+                            >
+                                Contact Details
+                            </p>
+
+                            {/* Phone row */}
+                            {contact.phone ? (
+                                <div className="flex items-center gap-4 px-6 py-3">
+                                    <div
+                                        className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                                        style={{ background: "#1E2A35" }}
+                                    >
+                                        <Phone className="w-4 h-4" style={{ color: "var(--color-primary)" }} />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
+                                            Phone Number
+                                        </span>
+                                        <span className="text-[13px] text-slate-200">
+                                            {contact.phone}
+                                        </span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-4 px-6 py-3">
+                                    <div
+                                        className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                                        style={{ background: "#1E2A35" }}
+                                    >
+                                        <Phone className="w-4 h-4 text-slate-600" />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
+                                            Phone Number
+                                        </span>
+                                        <span className="text-[13px] text-slate-500 italic">
+                                            Not provided
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Divider */}
+                            <div className="mx-6 my-0 h-px" style={{ background: "#2A3942" }} />
+
+                            {/* Email row */}
+                            <div className="flex items-center gap-4 px-6 py-3 mb-2">
+                                <div
+                                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                                    style={{ background: "#1E2A35" }}
+                                >
+                                    <Mail className="w-4 h-4" style={{ color: "var(--color-primary)" }} />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
+                                        Email
+                                    </span>
+                                    <span className="text-[13px] text-slate-200 break-all">
+                                        {contact.email}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Danger zone actions */}
-                        <button className="w-full h-11 flex items-center justify-center gap-2 rounded-lg text-sm font-semibold border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-colors">
-                            <Ban className="w-4 h-4" />
-                            <span>Block Contact</span>
-                        </button>
+                        {/* ── Shared Media ──────────────────────────────────────── */}
+                        <div
+                            className="border-b"
+                            style={{ borderColor: "#2A3942" }}
+                        >
+                            <div className="flex items-center justify-between px-6 pt-5 pb-2">
+                                <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: "var(--color-primary)" }}>
+                                    Shared Media
+                                </p>
+                                <button className="text-[12px] font-medium text-slate-400 hover:text-white transition-colors">
+                                    View All
+                                </button>
+                            </div>
+
+                            {/* Placeholder grid */}
+                            <div className="px-6 pb-5">
+                                <div
+                                    className="w-full rounded-xl p-6 flex flex-col items-center justify-center gap-2 border"
+                                    style={{ background: "#0E1621", borderColor: "#2A3942" }}
+                                >
+                                    <ImageIcon className="w-8 h-8 text-slate-600" />
+                                    <span className="text-[12px] text-slate-500">
+                                        No shared media yet.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* ── Danger zone ───────────────────────────────────────── */}
+                        <div className="px-6 py-5">
+                            <button className="w-full h-11 flex items-center justify-center gap-2.5 rounded-xl text-[13px] font-semibold border transition-colors"
+                                style={{ borderColor: "rgba(235,64,52,0.35)", color: "#EB4034" }}
+                                onMouseEnter={e => (e.currentTarget.style.background = "rgba(235,64,52,0.08)")}
+                                onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                            >
+                                <Ban className="w-4 h-4" />
+                                Block Contact
+                            </button>
+                        </div>
                     </div>
                 </motion.div>
             )}
