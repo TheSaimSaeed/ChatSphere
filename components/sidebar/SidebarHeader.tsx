@@ -8,6 +8,7 @@ import { RootState, AppDispatch } from '@/store';
 import { useRouter } from 'next/navigation';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { logoutThunk } from '@/store/slices/authThunks';
+import { setNewGroupModalOpen } from '@/store/slices/uiSlice';
 
 interface SidebarHeaderProps {
     onNewDMClick: () => void;
@@ -38,7 +39,7 @@ export default function SidebarHeader({ onNewDMClick }: SidebarHeaderProps) {
             </div>
 
             <div className="flex items-center space-x-2">
-                <IconButton onClick={() => { }} title="New Group">
+                <IconButton onClick={() => dispatch(setNewGroupModalOpen(true))} title="New Group">
                     <Users className="w-5 h-5 text-white" strokeWidth={1.5} />
                 </IconButton>
                 <IconButton onClick={onNewDMClick} title="New Chat">

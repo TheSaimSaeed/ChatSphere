@@ -1,12 +1,14 @@
 "use client";
 
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/store";
 import { usePathname, useRouter } from "next/navigation";
+import { setNewGroupModalOpen } from "@/store/slices/uiSlice";
 
 /** Displays the narrow navigation sidebar with app icon, menu items, and user profile. */
 export default function NarrowSidebar() {
     const { user } = useSelector((state: RootState) => state.auth);
+    const dispatch = useDispatch<AppDispatch>();
     const pathname = usePathname();
     const router = useRouter();
 
@@ -29,10 +31,13 @@ export default function NarrowSidebar() {
                         <span className={`material-symbols-outlined text-[28px] ${isChat ? 'fill-1' : ''}`}>chat_bubble</span>
                         <div className="absolute left-14 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">Chats</div>
                     </button>
-                    {/* Groups – placeholder, wired in Slice 8 */}
-                    <button className="group relative cursor-pointer text-slate-500 hover:text-(--primary) transition-colors">
+                    {/* Groups */}
+                    <button 
+                        onClick={() => dispatch(setNewGroupModalOpen(true))}
+                        className="group relative cursor-pointer text-slate-500 hover:text-(--primary) transition-colors"
+                    >
                         <span className="material-symbols-outlined text-[28px]">group</span>
-                        <div className="absolute left-14 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">Groups</div>
+                        <div className="absolute left-14 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">New Group</div>
                     </button>
                     {/* Calls – placeholder */}
                     <button className="group relative cursor-pointer text-slate-500 hover:text-(--primary) transition-colors">

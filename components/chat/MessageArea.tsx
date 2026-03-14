@@ -17,9 +17,12 @@ export default function MessageArea() {
     const user = useSelector((state: any) => state.auth?.user);
     const isMockUser = !user?._id;
 
-    const messages = messagesByChatId[activeChatId || ""] || [];
-    const typingUsers = typingByChatId[activeChatId || ""] || [];
+    const messages = messagesByChatId[activeChatId || ''] || [];
+    const typingUsers = typingByChatId[activeChatId || ''] || [];
     const typersNames = typingUsers.map(u => u.name);
+
+    const activeChat = useSelector((s: RootState) => s.chat.chats.find((c) => c._id === activeChatId));
+    const isGroupChat = activeChat?.isGroup ?? false;
 
     const containerRef = useRef<HTMLDivElement>(null);
     const sentinelRef = useRef<HTMLDivElement>(null);
@@ -204,6 +207,7 @@ export default function MessageArea() {
                                 message={msg}
                                 isOutgoing={isOutgoing}
                                 isConsecutive={isConsecutive}
+                                isGroup={isGroupChat}
                             />
                         );
                     })}

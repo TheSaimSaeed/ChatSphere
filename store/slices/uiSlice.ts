@@ -12,6 +12,8 @@ export interface UiState {
     notificationsEnabled: boolean;
     toasts: Toast[];
     isContactInfoOpen: boolean;
+    isGroupInfoOpen: boolean;
+    isNewGroupModalOpen: boolean;
 }
 
 const initialState: UiState = {
@@ -20,9 +22,11 @@ const initialState: UiState = {
     notificationsEnabled: false,
     toasts: [],
     isContactInfoOpen: false,
+    isGroupInfoOpen: false,
+    isNewGroupModalOpen: false,
 };
 
-/** Manages global UI preferences, theming, and the toast notification system. */
+/** Manages global UI preferences, theming, toast notifications, and panel/modal open states. */
 export const uiSlice = createSlice({
     name: 'ui',
     initialState,
@@ -37,13 +41,27 @@ export const uiSlice = createSlice({
             state.toasts.push(action.payload);
         },
         removeToast: (state, action: PayloadAction<string>) => {
-            state.toasts = state.toasts.filter(toast => toast.id !== action.payload);
+            state.toasts = state.toasts.filter((toast) => toast.id !== action.payload);
         },
         setContactInfoOpen: (state, action: PayloadAction<boolean>) => {
             state.isContactInfoOpen = action.payload;
         },
+        setGroupInfoOpen: (state, action: PayloadAction<boolean>) => {
+            state.isGroupInfoOpen = action.payload;
+        },
+        setNewGroupModalOpen: (state, action: PayloadAction<boolean>) => {
+            state.isNewGroupModalOpen = action.payload;
+        },
     },
 });
 
-export const { setTheme, addToast, removeToast, setContactInfoOpen } = uiSlice.actions;
+export const {
+    setTheme,
+    addToast,
+    removeToast,
+    setContactInfoOpen,
+    setGroupInfoOpen,
+    setNewGroupModalOpen,
+} = uiSlice.actions;
+
 export default uiSlice.reducer;

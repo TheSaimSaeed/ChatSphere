@@ -6,7 +6,7 @@ export const createDMSchema = z.object({
 
 export const createGroupSchema = z.object({
     name: z.string().min(1, 'Group name is required').trim(),
-    participants: z.array(z.string()).min(2, 'At least 2 additional participants required'),
+    participants: z.array(z.string()).min(1, 'At least 1 additional participant required'),
     icon: z.string().url().optional().or(z.literal('')),
 });
 
