@@ -42,23 +42,8 @@ function ChatDashboardContent() {
                     Start New Chat
                 </button>
             </div>
-            <footer className="p-6 bg-(--chat-bg)/80 backdrop-blur-md border-t border-white/5 opacity-50 grayscale pointer-events-none">
-                <div className="max-w-4xl mx-auto flex items-end gap-4">
-                    <div className="flex items-center gap-2 mb-1">
-                        <button className="p-2 text-slate-600">
-                            <span className="material-symbols-outlined">add_circle</span>
-                        </button>
-                        <button className="p-2 text-slate-600">
-                            <span className="material-symbols-outlined">mood</span>
-                        </button>
-                    </div>
-                    <div className="flex-1 relative">
-                        <textarea className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 pr-12 text-sm text-slate-600 placeholder:text-slate-600 resize-none max-h-32 min-h-12 outline-none" disabled placeholder="Select a chat to type..." rows={1}></textarea>
-                        <button className="absolute right-3 bottom-2.5 text-slate-600 p-1" disabled>
-                            <span className="material-symbols-outlined">send</span>
-                        </button>
-                    </div>
-                </div>
+            <footer className="p-3 bg-(--chat-bg)/80 backdrop-blur-md border-t border-white/5 opacity-50 grayscale pointer-events-none">
+
                 <div className="mt-4 flex justify-center">
                     <div className="flex items-center gap-2 text-slate-700">
                         <span className="material-symbols-outlined text-sm">lock</span>

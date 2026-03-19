@@ -6,6 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { RootState, AppDispatch } from '@/store';
 import { fetchChatsThunk } from '@/store/slices/chatThunks';
 import { setActiveChatId } from '@/store/slices/chatSlice';
+import { setNewGroupModalOpen } from '@/store/slices/uiSlice';
 import ChatListItem from './ChatListItem';
 import NewDMOverlay from './NewDMOverlay';
 
@@ -186,6 +187,13 @@ export default function Sidebar() {
                 <button className="flex flex-col items-center gap-1 text-slate-500 hover:text-white transition-colors">
                     <span className="material-symbols-outlined text-2xl">call</span>
                     <span className="text-[10px] font-bold uppercase tracking-wider">Calls</span>
+                </button>
+                <button
+                    onClick={() => dispatch(setNewGroupModalOpen(true))}
+                    className="flex flex-col items-center gap-1 text-slate-500 hover:text-white transition-colors"
+                >
+                    <span className="material-symbols-outlined text-2xl">group</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider">Groups</span>
                 </button>
                 <button
                     onClick={() => router.push('/profile')}
