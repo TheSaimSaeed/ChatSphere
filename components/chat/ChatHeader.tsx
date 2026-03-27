@@ -25,7 +25,7 @@ export default function ChatHeader() {
     if (!activeChat || !user) return null;
 
     const contact = !activeChat.isGroup
-        ? activeChat.participants.find((p: any) => p._id !== user._id)
+        ? activeChat.participants.find((p: any) => String(p._id) !== String(user?._id))
         : null;
 
     const name = activeChat.isGroup ? activeChat.name : contact?.name || "Unknown";

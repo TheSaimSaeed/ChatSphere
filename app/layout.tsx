@@ -4,17 +4,22 @@ import StoreProvider from "./StoreProvider";
 import { ToastContainer } from "@/components/shared/ToastContainer";
 import { SessionInit } from "@/components/auth/SessionInit";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Auth0Provider } from '@auth0/nextjs-auth0';
+import { auth0 } from '@/lib/auth0';
+// User sync logic is handled in Server Components/Routes to keep Middleware edge-compatible.
 
 export const metadata: Metadata = {
   title: "ChatSphere",
   description: "Simple, fast, real-time messaging.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth0.getSession();
+  
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -30,14 +35,16 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-(--chat-bg) text-slate-100 antialiased selection:bg-primary selection:text-black">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <StoreProvider>
-            <SessionInit>
-              {children}
-              <ToastContainer />
-            </SessionInit>
-          </StoreProvider>
-        </ThemeProvider>
+        <Auth0Provider user={session?.user}>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <StoreProvider>
+              <SessionInit>
+                {children}
+                <ToastContainer />
+              </SessionInit>
+            </StoreProvider>
+          </ThemeProvider>
+        </Auth0Provider>
       </body>
     </html>
   );

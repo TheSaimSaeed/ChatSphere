@@ -24,9 +24,10 @@ export default function SidebarHeader({ onNewDMClick }: SidebarHeaderProps) {
         router.push('/profile');
     };
 
-    const handleLogout = async () => {
-        await dispatch(logoutThunk());
-        router.push('/login');
+    const handleLogout = () => {
+        // Redux will be fully cleared when the app reloads on the /login page
+        // Transition to the unified sign-out route
+        window.location.href = '/api/logout';
     };
 
     return (

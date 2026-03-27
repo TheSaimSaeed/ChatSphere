@@ -34,7 +34,7 @@ export default function Sidebar() {
             if (chat.isGroup) {
                 return chat.name?.toLowerCase().includes(q);
             } else {
-                const other = chat.participants.find(p => p._id !== user?._id) || chat.participants[0];
+                const other = chat.participants.find(p => String(p._id) !== String(user?._id)) || chat.participants[0];
                 return other?.name?.toLowerCase().includes(q) || other?.email?.toLowerCase().includes(q);
             }
         });

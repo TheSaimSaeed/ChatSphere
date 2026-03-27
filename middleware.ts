@@ -1,33 +1,57 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { auth0 } from "./lib/auth0";
 
 /** Middleware to protect routes that require authentication and redirect logged-in users away from auth pages. */
-export function middleware(request: NextRequest) {
-    const token = request.cookies.get('session.token')?.value;
+export async function middleware(request: NextRequest) {
+    // 1. Let Auth0 middleware process the request first
+    const authRes = await auth0.middleware(request);
 
-    const isAuthPage = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/register');
-    const isProtectedPath = request.nextUrl.pathname.startsWith('/chat') || request.nextUrl.pathname.startsWith('/profile');
 
-    if (!token && isProtectedPath) {
+    if (request.nextUrl.pathname.startsWith("/auth")) {
+        return authRes;
+    }
+
+    // 2. Resolve final authentication unified state
+    const session = await auth0.getSession(request);
+    const auth0Token = session?.user;
+    const customToken = request.cookies.get('session.token')?.value;
+
+    const isAuthenticated = !!auth0Token || !!customToken;
+    const isAuthPage = ['/login', '/register'].some(p => request.nextUrl.pathname.startsWith(p));
+    const isProtectedPath = ['/chat', '/profile', '/api/chats', '/api/users'].some(p => request.nextUrl.pathname.startsWith(p));
+
+    // 👮 Protect Routes
+    if (!isAuthenticated && isProtectedPath) {
+        if (request.nextUrl.pathname.startsWith('/api')) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
         return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    if (token && isAuthPage) {
+    if (isAuthenticated && isAuthPage) {
         return NextResponse.redirect(new URL('/chat', request.url));
     }
 
-    // Allow API routes to handle their own auth checks using withAuth
-    // But we could also centrally protect /api/ routes here if needed.
-    // We'll follow the plan using withAuth in route handlers.
+    // 🛡️ TRUSTED HEADER INJECTION: Sync with API Routes
+    if (isAuthenticated && auth0Token) {
+        // Find MongoDB ID if possible (from session or bridge? - we'll rely on withAuth for DB lookups, 
+        // but passing the email/sub helps for identification consistency)
+        authRes.headers.set('x-auth-user-email', auth0Token.email || '');
+        authRes.headers.set('x-auth-user-id', auth0Token.sub || '');
+    }
 
-    return NextResponse.next();
+    return authRes;
 }
 
 export const config = {
     matcher: [
-        '/login',
-        '/register',
-        '/chat/:path*',
-        '/profile',
+        /*
+         * Match all request paths except for the ones starting with:
+         * - _next/static (static files)
+         * - _next/image (image optimization files)
+         * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+         */
+        "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)"
     ],
 };

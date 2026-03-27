@@ -17,7 +17,7 @@ export default function ChatListItem({ chat, isActive, onClick }: ChatListItemPr
     // Identify the other participant for DMs
     const otherParticipant = chat.isGroup
         ? null
-        : chat.participants.find(p => p._id !== user?._id) || chat.participants[0];
+        : chat.participants.find(p => String(p._id) !== String(user?._id)) || chat.participants[0];
 
     const name = chat.isGroup ? chat.name : otherParticipant?.name;
     const avatar = chat.isGroup ? chat.icon : otherParticipant?.avatar;
