@@ -18,8 +18,19 @@ export async function middleware(request: NextRequest) {
     const customToken = request.cookies.get('session.token')?.value;
 
     const isAuthenticated = !!auth0Token || !!customToken;
-    const isAuthPage = ['/login', '/register'].some(p => request.nextUrl.pathname.startsWith(p));
-    const isProtectedPath = ['/chat', '/profile', '/api/chats', '/api/users'].some(p => request.nextUrl.pathname.startsWith(p));
+
+    // Pages meant only for unauthenticated users
+    const authPages = ['/login', '/register', '/forgot-password', '/verify-email'];
+    const isAuthPage = authPages.some(p => request.nextUrl.pathname.startsWith(p));
+
+    // Public paths that do not require authentication
+    const publicApiPaths = ['/api/auth', '/api/logout', '/auth'];
+    const isPublicPath = [...authPages, ...publicApiPaths].some(p => 
+        request.nextUrl.pathname === p || request.nextUrl.pathname.startsWith(`${p}/`)
+    );
+
+    // Any path that isn't explicitly public is protected by default
+    const isProtectedPath = !isPublicPath;
 
     // 👮 Protect Routes
     if (!isAuthenticated && isProtectedPath) {
