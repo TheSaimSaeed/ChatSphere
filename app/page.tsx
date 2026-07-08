@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Play } from 'lucide-react';
+import { Play, Shield, Zap, RefreshCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function LandingPage() {
@@ -87,6 +87,68 @@ export default function LandingPage() {
                    <div className="p-3 border-t border-gray-800 m-2 mt-auto bg-[#1F2C34] rounded-full"></div>
                 </div>
              </div>
+          </div>
+        </div>
+      </section>
+      {/* Section 2: Trusted By & Features Grid */}
+      <section className="w-full pt-12 pb-24 px-8 relative max-w-7xl mx-auto flex flex-col items-center">
+        {/* Trusted By / Companies */}
+        <div className="flex flex-col items-center gap-8 mb-24 w-full">
+          <p className="text-xs font-semibold tracking-widest text-gray-500 uppercase">
+            JOIN 10K+ PROFESSIONALS WORLDWIDE
+          </p>
+          <div className="flex flex-wrap justify-center gap-12 md:gap-24 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+            {['VOLT', 'AURORA', 'QUANTUM', 'NEBULA', 'VERTEX'].map((company) => (
+              <span key={company} className="text-xl md:text-2xl font-bold tracking-wider text-gray-400">
+                {company}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Features Header */}
+        <div className="text-center max-w-3xl mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+            Built for the modern edge.
+          </h2>
+          <p className="text-gray-400 text-lg md:text-xl leading-relaxed">
+            Precision engineering meets minimalist design to provide the best secure chat experience on the planet.
+          </p>
+        </div>
+
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+          {/* Card 1 */}
+          <div className="bg-[#1F2C34]/40 border border-white/5 p-8 rounded-2xl flex flex-col gap-4 hover:bg-[#1F2C34]/80 transition-colors">
+            <div className="w-12 h-12 rounded-xl bg-[#25D366]/10 flex items-center justify-center text-[#25D366] mb-2">
+              <Shield className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold">Unrivaled Security</h3>
+            <p className="text-gray-400 leading-relaxed">
+              Military-grade end-to-end encryption ensures your conversations stay yours. No backdoors, no compromises.
+            </p>
+          </div>
+
+          {/* Card 2 */}
+          <div className="bg-[#1F2C34]/40 border border-white/5 p-8 rounded-2xl flex flex-col gap-4 hover:bg-[#1F2C34]/80 transition-colors">
+            <div className="w-12 h-12 rounded-xl bg-[#25D366]/10 flex items-center justify-center text-[#25D366] mb-2">
+              <Zap className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold">Blazing Speed</h3>
+            <p className="text-gray-400 leading-relaxed">
+              Optimized protocols deliver messages instantly, even on low-bandwidth connections across the globe.
+            </p>
+          </div>
+
+          {/* Card 3 */}
+          <div className="bg-[#1F2C34]/40 border border-white/5 p-8 rounded-2xl flex flex-col gap-4 hover:bg-[#1F2C34]/80 transition-colors">
+            <div className="w-12 h-12 rounded-xl bg-[#25D366]/10 flex items-center justify-center text-[#25D366] mb-2">
+              <RefreshCcw className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold">Universal Sync</h3>
+            <p className="text-gray-400 leading-relaxed">
+              Start a conversation on your phone and finish it on your desktop, seamlessly. Your data stays in sync.
+            </p>
           </div>
         </div>
       </section>
