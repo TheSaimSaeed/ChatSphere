@@ -209,6 +209,82 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+      {/* Section 4: Stats Banner & Testimonials */}
+      <section className="w-full mt-12 flex flex-col">
+        {/* Stats Banner */}
+        <div className="w-full bg-[#25D366] py-16 px-8">
+          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
+            <div className="flex flex-col gap-2">
+              <h4 className="text-4xl md:text-5xl font-black text-[#0B141A] tracking-tighter">10M+</h4>
+              <p className="text-[#0B141A] font-semibold text-sm tracking-widest uppercase">Active Users</p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h4 className="text-4xl md:text-5xl font-black text-[#0B141A] tracking-tighter">99.9%</h4>
+              <p className="text-[#0B141A] font-semibold text-sm tracking-widest uppercase">Uptime</p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h4 className="text-4xl md:text-5xl font-black text-[#0B141A] tracking-tighter">24/7</h4>
+              <p className="text-[#0B141A] font-semibold text-sm tracking-widest uppercase">Global Support</p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h4 className="text-4xl md:text-5xl font-black text-[#0B141A] tracking-tighter">190+</h4>
+              <p className="text-[#0B141A] font-semibold text-sm tracking-widest uppercase">Countries</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Testimonials */}
+        <div className="w-full py-32 px-8 bg-gradient-to-b from-[#0B141A] to-[#111B21]">
+          <div className="max-w-7xl mx-auto flex flex-col items-center gap-16">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-center">
+              Trusted by teams everywhere.
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+              {/* Testimonial 1 */}
+              <div className="bg-[#1F2C34]/40 border border-white/5 p-8 rounded-2xl flex flex-col justify-between gap-8">
+                <p className="text-lg text-gray-300 italic leading-relaxed">
+                  "The fastest messaging app we've ever used. The sync between mobile and desktop is flawless."
+                </p>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-gray-600"></div>
+                  <div className="flex flex-col">
+                    <span className="font-bold text-white">Sarah Chen</span>
+                    <span className="text-xs font-bold text-[#25D366] uppercase tracking-wider">CTO, AURORA TECH</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonial 2 */}
+              <div className="bg-[#1F2C34]/40 border border-white/5 p-8 rounded-2xl flex flex-col justify-between gap-8">
+                <p className="text-lg text-gray-300 italic leading-relaxed">
+                  "Security isn't just a feature here, it's the foundation. Our legal team trusts them at scale."
+                </p>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-gray-600"></div>
+                  <div className="flex flex-col">
+                    <span className="font-bold text-white">Marcus Thorne</span>
+                    <span className="text-xs font-bold text-[#25D366] uppercase tracking-wider">DIRECTOR, VERTEX CORP</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonial 3 */}
+              <div className="bg-[#1F2C34]/40 border border-white/5 p-8 rounded-2xl flex flex-col justify-between gap-8">
+                <p className="text-lg text-gray-300 italic leading-relaxed">
+                  "Minimalist, powerful, and incredibly reliable. ChatSphere has replaced three other tools for us."
+                </p>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-gray-600"></div>
+                  <div className="flex flex-col">
+                    <span className="font-bold text-white">Elena Rodriguez</span>
+                    <span className="text-xs font-bold text-[#25D366] uppercase tracking-wider">VP ENGINEERING, NEBULA</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );  
 }
