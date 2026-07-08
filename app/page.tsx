@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Play, Shield, Zap, RefreshCcw } from 'lucide-react';
+import { Play, Shield, Zap, RefreshCcw, ShieldCheck, EyeOff, Mic, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function LandingPage() {
@@ -151,7 +151,64 @@ export default function LandingPage() {
             </p>
           </div>
         </div>
+        </section>
+      {/* Section 3: Privacy & HD Calls */}
+      <section className="w-full py-24 px-8 relative max-w-7xl mx-auto flex flex-col gap-32">
+        {/* Privacy Row */}
+        <div className="flex flex-col md:flex-row items-center gap-16">
+          <div className="w-full md:w-1/2 flex justify-center">
+            <div className="w-full max-w-md aspect-[4/3] rounded-2xl bg-[#1F2C34]/30 border border-white/5 flex items-center justify-center">
+              <Shield className="w-32 h-32 text-[#25D366]/20 stroke-[1]" />
+            </div>
+          </div>
+          <div className="w-full md:w-1/2 flex flex-col items-start gap-6">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Privacy First, Always.</h2>
+            <p className="text-gray-400 text-lg leading-relaxed">
+              Our proprietary encryption protocol ensures that your messages, files, and calls are visible only to you and your recipient. Not even ChatSphere can access your data.
+            </p>
+            <div className="flex flex-col gap-4 mt-2">
+              <div className="flex items-center gap-3">
+                <ShieldCheck className="w-5 h-5 text-[#25D366]" />
+                <span className="text-gray-200 font-medium">Zero-knowledge architecture</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <EyeOff className="w-5 h-5 text-[#25D366]" />
+                <span className="text-gray-200 font-medium">Self-destructing messages</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* HD Calls Row */}
+        <div className="flex flex-col md:flex-row-reverse items-center gap-16">
+          <div className="w-full md:w-1/2 flex justify-center">
+            <div className="w-full max-w-md aspect-[4/3] rounded-2xl bg-[#1F2C34]/30 border border-white/5 flex items-center justify-center">
+              {/* Custom SVG for waveform */}
+              <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-[#25D366]/20 stroke-[1.5]" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 12c1.5-1.5 3-1.5 4.5 0s3 1.5 4.5 0 3-1.5 4.5 0s3 1.5 4.5 0" />
+                <path d="M4 8c1.5-1.5 3-1.5 4.5 0s3 1.5 4.5 0 3-1.5 4.5 0s3 1.5 4.5 0" />
+                <path d="M4 16c1.5-1.5 3-1.5 4.5 0s3 1.5 4.5 0 3-1.5 4.5 0s3 1.5 4.5 0" />
+              </svg>
+            </div>
+          </div>
+          <div className="w-full md:w-1/2 flex flex-col items-start gap-6">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Crystal Clear HD Calls.</h2>
+            <p className="text-gray-400 text-lg leading-relaxed">
+              Experience low-latency voice and video calls that feel like you're in the same room. Optimized for unstable networks so you never drop a beat.
+            </p>
+            <div className="flex items-center gap-4 mt-2">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1F2C34] border border-white/10">
+                <Mic className="w-4 h-4 text-[#25D366]" />
+                <span className="text-sm font-semibold text-gray-200 uppercase tracking-wide">High Audio</span>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1F2C34] border border-white/10">
+                <Video className="w-4 h-4 text-[#25D366]" />
+                <span className="text-sm font-semibold text-gray-200 uppercase tracking-wide">4K Video</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </div>
-  );
+  );  
 }
