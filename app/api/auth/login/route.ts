@@ -8,6 +8,7 @@ import { cookies } from 'next/headers';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import { env } from '@/lib/env';
+import { withLogging } from '@/lib/api-wrapper';
 
 // Upstash rate limiting (only initialized if vars are present, for seamless dev fallback)
 let ratelimit: Ratelimit | null = null;
@@ -39,7 +40,7 @@ function getIpAddress(request: NextRequest): string {
     return "127.0.0.1";
 }
 
-export async function POST(req: NextRequest) {
+const loginHandler = async (req: NextRequest) => {
     try {
         // 1. Rate Limiting Check
         if (ratelimit) {
@@ -87,7 +88,7 @@ export async function POST(req: NextRequest) {
         return response;
 
     } catch (error: any) {
-        console.error('ERROR: [auth:login]', error);
+        console.error('ERROR: [api:auth:login]', error);
         if (error.isUnverified) {
             return NextResponse.json(
                 { error: error.message, isUnverified: true },
@@ -99,4 +100,6 @@ export async function POST(req: NextRequest) {
             { status: error.statusCode || 500 }
         );
     }
-}
+};
+
+export const POST = withLogging(loginHandler);

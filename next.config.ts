@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  serverExternalPackages: ['pino', 'pino-pretty'],
   images: {
     remotePatterns: [
       {
@@ -9,7 +10,6 @@ const nextConfig: NextConfig = {
         hostname: 'res.cloudinary.com',
         pathname: '/**',
       },
-      // Placeholders/Fallback origins if any
     ],
   },
   async headers() {

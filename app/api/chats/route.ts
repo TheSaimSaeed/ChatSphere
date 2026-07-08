@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { withAuth, AuthenticatedRequest } from '@/lib/middleware/withAuth';
 import { getChats } from '@/lib/services/chatService';
+import { withLogging } from '@/lib/api-wrapper';
 
-/** Handles returning the list of chats for the authenticated user. */
-export const GET = withAuth(async (req: AuthenticatedRequest) => {
+const getChatsHandler = withAuth(async (req: AuthenticatedRequest) => {
     try {
         const chats = await getChats(req.user.userId);
         return NextResponse.json({ chats }, { status: 200 });
@@ -12,3 +12,5 @@ export const GET = withAuth(async (req: AuthenticatedRequest) => {
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 });
+
+export const GET = withLogging(getChatsHandler);
