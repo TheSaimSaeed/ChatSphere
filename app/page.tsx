@@ -285,6 +285,129 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+      {/* Section 5: Compliance, Bottom CTA & Footer */}
+      <section className="w-full bg-[#0B141A] pt-16 flex flex-col items-center">
+        {/* Compliance */}
+        <div className="flex flex-col items-center gap-6 mb-32 w-full px-8">
+          <p className="text-xs font-semibold tracking-widest text-gray-500 uppercase">
+            MEETS GLOBAL STANDARDS
+          </p>
+          <div className="flex flex-wrap justify-center gap-8 md:gap-16">
+            {['SOC2 TYPE II', 'GDPR READY', 'HIPAA', 'ISO 27001'].map((standard) => (
+              <span key={standard} className="text-sm md:text-base font-bold tracking-widest text-gray-400">
+                {standard}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="w-full max-w-5xl px-8 mb-32">
+          <div className="w-full bg-[#1F2C34]/80 border border-white/5 rounded-[2.5rem] p-12 md:p-20 flex flex-col items-center text-center gap-8 relative overflow-hidden">
+            {/* Background glowing effect */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[#25D366]/5 blur-[100px] pointer-events-none"></div>
+            
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tight z-10">
+              Ready to join the sphere?
+            </h2>
+            <p className="text-gray-400 text-lg md:text-xl max-w-2xl z-10">
+              Join millions of users who trust ChatSphere for their most important conversations.
+            </p>
+            <Link href="/register" className="z-10 mt-4">
+              <Button className="bg-[#25D366] hover:bg-[#1EBE58] text-black font-semibold rounded-full px-10 py-7 text-lg h-auto shadow-[0_0_30px_rgba(37,211,102,0.2)] transition-all hover:scale-105">
+                Create Your Free Account
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <footer className="w-full border-t border-white/10 pt-20 pb-8 px-8">
+          <div className="max-w-7xl mx-auto flex flex-col gap-16">
+            <div className="grid grid-cols-1 lg:grid-cols-6 gap-12 lg:gap-8">
+              
+              {/* Brand Col */}
+              <div className="lg:col-span-2 flex flex-col gap-6">
+                <span className="text-[#25D366] font-bold text-2xl tracking-tight">ChatSphere</span>
+                <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
+                  The global standard for secure, seamless communication for individuals and enterprises alike.
+                </p>
+                <div className="flex items-center gap-4 mt-2">
+                  {/* Placeholder social icons */}
+                  <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer text-gray-400 hover:text-white">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer text-gray-400 hover:text-white">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer text-gray-400 hover:text-white">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 21.35-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Link Cols */}
+              <div className="flex flex-col gap-6">
+                <h5 className="font-bold text-xs tracking-widest text-[#25D366] uppercase">PRODUCT</h5>
+                <div className="flex flex-col gap-4 text-sm text-gray-400">
+                  <Link href="#" className="hover:text-white transition-colors">Features</Link>
+                  <Link href="#" className="hover:text-white transition-colors">Download</Link>
+                  <Link href="#" className="hover:text-white transition-colors">Web App</Link>
+                  <Link href="#" className="hover:text-white transition-colors">iOS / Android</Link>
+                  <Link href="#" className="hover:text-white transition-colors">Pricing</Link>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-6">
+                <h5 className="font-bold text-xs tracking-widest text-[#25D366] uppercase">RESOURCES</h5>
+                <div className="flex flex-col gap-4 text-sm text-gray-400">
+                  <Link href="#" className="hover:text-white transition-colors">Help Center</Link>
+                  <Link href="#" className="hover:text-white transition-colors">Community</Link>
+                  <Link href="#" className="hover:text-white transition-colors">Blog</Link>
+                  <Link href="#" className="hover:text-white transition-colors">Security Whitepaper</Link>
+                  <Link href="#" className="hover:text-white transition-colors">Status</Link>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-6">
+                <h5 className="font-bold text-xs tracking-widest text-[#25D366] uppercase">COMPANY</h5>
+                <div className="flex flex-col gap-4 text-sm text-gray-400">
+                  <Link href="#" className="hover:text-white transition-colors">About Us</Link>
+                  <Link href="#" className="hover:text-white transition-colors">Careers</Link>
+                  <Link href="#" className="hover:text-white transition-colors">Press</Link>
+                  <Link href="#" className="hover:text-white transition-colors">Contact</Link>
+                </div>
+              </div>
+
+              <div className="lg:col-span-2 flex flex-col gap-6">
+                <h5 className="font-bold text-xs tracking-widest text-[#25D366] uppercase">NEWSLETTER</h5>
+                <p className="text-sm text-gray-400">
+                  Stay updated on our latest releases.
+                </p>
+                <div className="flex items-center gap-2 mt-2">
+                  <input 
+                    type="email" 
+                    placeholder="Email" 
+                    className="bg-white/5 border border-white/10 rounded-full px-4 py-2.5 text-sm outline-none focus:border-[#25D366]/50 focus:ring-1 focus:ring-[#25D366]/50 w-full transition-all"
+                  />
+                  <button className="bg-white/10 hover:bg-white/20 rounded-full w-10 h-10 flex items-center justify-center shrink-0 transition-colors">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5 text-xs text-gray-500">
+              <p>© ChatSphere Inc. All rights reserved.</p>
+              <div className="flex items-center gap-6">
+                <Link href="#" className="hover:text-gray-300 transition-colors">Privacy Policy</Link>
+                <Link href="#" className="hover:text-gray-300 transition-colors">Terms of Service</Link>
+                <Link href="#" className="hover:text-gray-300 transition-colors">AUP</Link>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </section>
     </div>
   );  
 }
